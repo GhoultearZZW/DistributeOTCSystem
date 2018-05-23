@@ -1,32 +1,22 @@
 jQuery(document).ready(function(){
-    $("#signup").click(function(e){
+    $("#signin").click(function(e){
         var username;
         var password;
-        var confirmpassword;
 
         username=$("input[name='username']").val();
         password=$("input[name='password']").val();
-        confirmpassword=$("input[name='confirmpassword']").val();
         if(username==''){
-            alert("Please create your username");
+            alert("Please input your username");
             return false;
         }
         if(password==''){
             alert("Please input your password");
             return false;
         }
-        if(confirmpassword==''){
-            alert("Please confirm your password");
-            return false;
-        }
-        if(password!=confirmpassword){
-            alert("The two passwords you typed do not match");
-            return false;
-        }
 
         $.ajax({
             type:"post",
-            url:"/user/create",
+            url:"/user/login",
             contentType: "application/json",
             data:JSON.stringify({
                 "username":username,
@@ -34,11 +24,11 @@ jQuery(document).ready(function(){
             }),
             dataType:"json",
             success:function(resp){
-                alert("Sign up successfully!");
-                window.location.href = "signin.html";
+                alert("Sign in successfully!");
+                window.location.href = "#";
             },
             error:function(){
-                alert("Failed to sign up");
+                alert("Failed to sign in.You may have entered an incorrect username or password.");
             }
         })
     })
