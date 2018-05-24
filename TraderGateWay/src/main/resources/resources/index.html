@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+
+    <!--spring boot对请求静态资源的默认扫描路径是
+                                    classpath:/static
+                                    classpath:/public
+                                    classpath:/resources
+                                    classpath:/META-INF/resources
+        因此resources/resources&resources/static都是默认的扫描路径
+        但是其下的子文件夹并不是，因此请求时不能只请求文件名，而要带上子文件夹路径-->
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/index.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="site-wrapper">
+
+    <div class="site-wrapper-inner">
+
+        <div class="cover-container">
+
+            <div class="masthead clearfix">
+                <div class="inner">
+                    <h3 class="masthead-brand">Cover</h3>
+                    <nav>
+                        <ul class="nav masthead-nav">
+                            <li class="active"><a href="#">Home</a></li>
+                            <li><a href="#">Features</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="inner cover">
+                <h1 class="cover-heading">Distributed Commodities OTC Electronic Trading System</h1>
+                <p class="lead">Cover is a one-page template for building simple and beautiful home resources. Download,
+                    edit the text, and add your own fullscreen background photo to make it your own.</p>
+                <p class="lead">
+                    <a href="signin.html" class="btn btn-lg btn-primary">Sign In</a>
+                    <a href="signup.html" class="btn btn-lg btn-success">Sign Up</a>
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- Placed at the end of the document so templatesages load faster -->
+<script src="/js/bootstrap.min.js"></script>
+
+</body>
+</html>

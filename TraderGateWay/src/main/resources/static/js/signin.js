@@ -16,11 +16,11 @@ jQuery(document).ready(function(){
 
         $.ajax({
             type:"post",
-            url:"http://localhost:8080/user/login",
+            url:"/user/login",
             contentType: "application/json",
             data:JSON.stringify({
-                "username":"user1",
-                "password":"123456"
+                "username":username,
+                "password":password
             }),
             /*期望后端返回数据类型是json*/
             dataType:"json",
