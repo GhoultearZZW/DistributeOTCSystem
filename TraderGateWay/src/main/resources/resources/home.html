@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
@@ -7,7 +7,6 @@
     <link href="/css/home.css" rel="stylesheet">
 </head>
 <body>
-
 <div class="navbar-wrapper">
     <div class="container">
         <nav class="navbar navbar-inverse navbar-static-top">
@@ -26,7 +25,7 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Order <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a href="#">Market Order</a></li>
-                                <li id="myBtn"><a href="" onclick="return false">Limit Order</a></li>
+                                <li id="limitOrderWindow"><a href="" onclick="return false">Limit Order</a></li>
                                 <li><a href="#" onclick="return false">Stop Order</a></li>
                                 <li><a href="#">Stop Limit Order</a></li>
                                 <li role="separator" class="divider"></li>
@@ -79,7 +78,7 @@
     <div class="modal-content">
         <span class="close">&times;</span>
 
-        <form class="form-limit"  method="post">
+        <form class="form-limit" action="" method="post">
 
             <h2 class="form-limit-heading">Create limit order</h2>
 
@@ -109,8 +108,12 @@
 
 </div>
 
-<script src="/js/home.js"></script>
-<script src="/jquery/jquery.min.js"></script>
-<script src="/bootstrap/js/bootstrap.min.js"></script>
+<!--debug超级大坑，有依赖关系的,必须先加载被依赖的那个js！
+    home.js中依赖了jQuery，因此要先引入jQuery再引入home.js，否则home.js中有关jquery的事件将统统无效，比如点击某按钮无响应
+    bootstrap的所有JavaScript插件都依赖 jQuery，因此 jQuery必须在Bootstrap之前引入，否则本页面导航栏中的order下拉框就拉不下来了-->
+<script type="text/javascript" src="/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/home.js"></script>
+
 </body>
 </html>
