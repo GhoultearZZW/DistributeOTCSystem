@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="row">
+    <nav>
+        <ul class="pager">
+            <li class="previous"><a href="" />">Go Back</a></li>
+        </ul>
+    </nav>
+</div>
+
+<div class="page-header">
+    <h1>
+        Create book
+    </h1>
+</div>
+
+
+<form action=""  class="form-horizontal"
+autocomplete="off" method="post">
+<div class="form-group">
+    <label for="fieldIsbn" class="col-sm-2 control-label">ISBN</label>
+    <div class="col-sm-10">
+        <input type="text" id="fieldIsbn" name="isbn" class="form-control" size="30"/></div>
+</div>
+
+<div class="form-group">
+    <label for="fieldTitle" class="col-sm-2 control-label">Title</label>
+    <div class="col-sm-10">
+        <input type="text" id="fieldTitle" name="title" class="form-control" size="30"/></div>
+</div>
+
+<div class="form-group">
+    <label for="fieldAuthor" class="col-sm-2 control-label">Author</label>
+    <div class="col-sm-10">
+        <input type="text" id="fieldAuthor" name="author" class="form-control" size="30"/>
+    </div>
+</div>
+
+<div class="form-group">
+    <label for="fieldPress" class="col-sm-2 control-label">Press</label>
+    <div class="col-sm-10">
+        <input type="text" id="fieldPress" name="press" class="form-control" size="30"/></div>
+</div>
+
+<div class="form-group">
+    <label for="fieldPrice" class="col-sm-2 control-label">Price</label>
+    <div class="col-sm-10">
+        <input type="text" id="fieldPrice" name="price" class="form-control"/></div>
+</div>
+
+<div class="form-group">
+    <label for="fieldCategoryId" class="col-sm-2 control-label">Category</label>
+    <div class="col-sm-10">
+        <select id="fieldCategoryId" name="categoryId" class="form-control">
+            <c:forEach items="${categoryList}" var="category">
+                <option value="${category.id}">${category.name}</option>
+            </c:forEach>
+        </select>
+    </div>
+</div>
+
+<div class="form-group">
+    <label for="fieldCover" class="col-sm-2 control-label">Cover</label>
+    <div class="col-sm-10">
+        <input type="text" id="fieldCover" name="cover" class="form-control" size="120"
+               placeholder="Cover URL"/></div>
+</div>
+
+<div class="form-group">
+    <label for="fieldIntro" class="col-sm-2 control-label">Intro</label>
+    <div class="col-sm-10">
+        <textarea id="fieldIntro" name="intro" class="form-control" cols="6" rows="20"></textarea>
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+        <input type="submit" value="Save" class="btn btn-default"/></div>
+</div>
+</form>
+</body>
+</html>

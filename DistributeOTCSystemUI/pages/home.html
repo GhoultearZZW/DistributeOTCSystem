@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
-    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/home.css" rel="stylesheet">
+    <link href="../static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/home.css" rel="stylesheet">
 </head>
 <body>
 
@@ -49,22 +49,22 @@
     <!-- Three columns of text below the carousel -->
     <div class="row">
         <div class="col-lg-3">
-            <img class="img-circle" src="/image/gold.jpg" width="140" height="140">
+            <img class="img-circle" src="../static/image/gold.jpg" width="140" height="140">
             <h2>Gold</h2>
             <p><a class="btn btn-default" href="#" role="button">Market depth &raquo;</a></p>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-3">
-            <img class="img-circle" src="/image/silver.jpg" alt="Generic placeholder image" width="140" height="140">
+            <img class="img-circle" src="../static/image/silver.jpg" alt="Generic placeholder image" width="140" height="140">
             <h2>Silver</h2>
             <p><a class="btn btn-default" href="#" role="button">Market depth &raquo;</a></p>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-3">
-            <img class="img-circle" src="/image/oil.jpg" alt="Generic placeholder image" width="140" height="140">
+            <img class="img-circle" src="../static/image/oil.jpg" alt="Generic placeholder image" width="140" height="140">
             <h2>Oil</h2>
             <p><a class="btn btn-default" href="#" role="button">Market depth &raquo;</a></p>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-3">
-            <img class="img-circle" src="/image/soybean.jpg" width="140" height="140">
+            <img class="img-circle" src="../static/image/soybean.jpg" width="140" height="140">
             <h2>Soybean</h2>
             <p><a class="btn btn-default" href="#" role="button">Market depth &raquo;</a></p>
         </div>
@@ -79,38 +79,38 @@
     <div class="modal-content">
         <span class="close">&times;</span>
 
-        <form class="form-limit"  method="post">
+            <form class="form-limit"  method="post">
 
-            <h2 class="form-limit-heading">Create limit order</h2>
+                <h2 class="form-limit-heading">Create limit order</h2>
 
-            <label for="inputBroker" class="sr-only">Broker</label>
-            <input type="text" id="inputBroker" name="broker" class="form-control" placeholder="Broker" autofocus>
+                <label for="inputBroker" class="sr-only">Broker</label>
+                <input type="text" id="inputBroker" name="broker" class="form-control" placeholder="Broker" autofocus>
 
-            <label for="inputProduct" class="sr-only">Product</label>
-            <input type="text" id="inputProduct" name="product" class="form-control" placeholder="Product">
+                <label for="inputProduct" class="sr-only">Product</label>
+                <input type="text" id="inputProduct" name="product" class="form-control" placeholder="Product">
 
-            <label for="inputPeriod" class="sr-only">Period</label>
-            <input type="date" id="inputPeriod" name="period" class="form-control" placeholder="Period">
+                <label for="inputPeriod" class="sr-only">Period</label>
+                <input type="date" id="inputPeriod" name="period" class="form-control" placeholder="Period">
 
-            <label for="inputQuantity" class="sr-only">Quantity</label>
-            <input type="number" id="inputQuantity" name="quantity" class="form-control" placeholder="Quantity">
+                <label for="inputQuantity" class="sr-only">Quantity</label>
+                <input type="number" id="inputQuantity" name="quantity" class="form-control" placeholder="Quantity">
 
-            <label for="inputPrice" class="sr-only">Price</label>
-            <input type="text" id="inputPrice" name="price" class="form-control" placeholder="Price">
+                <label for="inputPrice" class="sr-only">Price</label>
+                <input type="text" id="inputPrice" name="price" class="form-control" placeholder="Price">
 
-            <label for="inputSide" class="sr-only">Side</label>
-            <input type="number" id="inputSide" name="side" class="form-control" placeholder="Side">
+                <label for="inputSide" class="sr-only">Side</label>
+                <input type="number" id="inputSide" name="side" class="form-control" placeholder="Side">
 
-            <button class="btn btn-lg btn-primary btn-block" type="button" id="summit">Summit order</button>
-        </form>
+                <button class="btn btn-lg btn-primary btn-block" type="button" id="summit">Summit order</button>
+            </form>
 
 
     </div>
 
 </div>
 
-<script src="/js/home.js"></script>
-<script src="/jquery/jquery.min.js"></script>
-<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="../static/js/home.js"></script>
+<script src="../static/jquery/jquery.min.js"></script>
+<script src="../static/bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>

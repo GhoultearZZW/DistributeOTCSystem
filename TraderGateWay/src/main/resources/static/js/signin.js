@@ -26,7 +26,7 @@ var signin=function(e){
         dataType:"json",
         /*后端的响应状态码为200时，表示响应成功，触发success*/
         success:function(data,textStatus){
-            alert("Sign in successfully!");
+            window.location.href = "home.html";
         },
         /*其他响应状态码，触发error，ajax还会在下列情况走error：1.返回数据类型不是json。2.网络中断。3.后台响应中断。*/
         error:function(){
