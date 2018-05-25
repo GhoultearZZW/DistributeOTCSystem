@@ -19,6 +19,7 @@ public class Order {
     private String orderTime;
     private String trader;
     private String tradeCompany;
+    private int status;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +33,7 @@ public class Order {
     }
 
     @Basic
-    @Column(name="orderType",nullable = false)
+    @Column(name="orderType",nullable = true)
     public String getOrderType() {
         return orderType;
     }
@@ -42,7 +43,7 @@ public class Order {
     }
 
     @Basic
-    @Column(name = "product",nullable = false)
+    @Column(name = "product",nullable = true)
     public String getProduct() {
         return product;
     }
@@ -52,7 +53,7 @@ public class Order {
     }
 
     @Basic
-    @Column(name = "period",nullable = false)
+    @Column(name = "period",nullable = true)
     public String getPeriod() {
         return period;
     }
@@ -62,7 +63,7 @@ public class Order {
     }
 
     @Basic
-    @Column(name = "quantity",nullable = false,length = 31)
+    @Column(name = "quantity",nullable = true,length = 31)
     public int getQuantity() {
         return quantity;
     }
@@ -72,7 +73,7 @@ public class Order {
     }
 
     @Basic
-    @Column(name = "price",nullable = false)
+    @Column(name = "price",nullable = true)
     public double getPrice() {
         return price;
     }
@@ -82,7 +83,7 @@ public class Order {
     }
 
     @Basic
-    @Column(name = "side",nullable = false,length = 31)
+    @Column(name = "side",nullable = true,length = 31)
     public int getSide() {
         return side;
     }
@@ -92,7 +93,7 @@ public class Order {
     }
 
     @Basic
-    @Column(name = "orderTime",nullable = false)
+    @Column(name = "orderTime",nullable = true)
     public String getOrderTime() {
         return orderTime;
     }
@@ -102,7 +103,7 @@ public class Order {
     }
 
     @Basic
-    @Column(name = "trader",nullable = false)
+    @Column(name = "trader",nullable = true)
     public String getTrader() {
         return trader;
     }
@@ -112,7 +113,7 @@ public class Order {
     }
 
     @Basic
-    @Column(name = "traderCompany",nullable = false)
+    @Column(name = "traderCompany",nullable = true)
     public String getTradeCompany() {
         return tradeCompany;
     }
@@ -122,12 +123,22 @@ public class Order {
     }
 
     @Basic
-    @Column(name = "broker",nullable = false)
+    @Column(name = "broker",nullable = true)
     public String getBroker() {
         return broker;
     }
 
     public void setBroker(String broker) {
         this.broker = broker;
+    }
+
+    @Basic
+    @Column(name = "status")
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }
