@@ -32,7 +32,7 @@ function getCookie(name){
     return "";
 }
 
-jQuery(document).ready($("#summit").click(function(e){
+jQuery(document).ready($("#submit").click(function(e){
     var broker;
     var orderType;
     var product;
@@ -41,39 +41,51 @@ jQuery(document).ready($("#summit").click(function(e){
     var price;
     var side;
     var trader;
-    var traderCompany;
-    broker=$("input[name='broker']").val();
-    product=$("input[name='product']").val();
-    period=$("input[name='period']").val();
-    quantity=$("input[name='quantity']").val();
-    price=$("input[name='price']").val();
-    side=$("input[name='side']").val();
+    var tradeCompany;
+
+    /*前端所有的input元素,不管type属性是text、number or whatever,js能拿到的用户输入都是字符串类型,
+    因此如果需要int、double等类型需要做相应的类型转换，最好用的是Number(string str)方法*/
+
+    broker=$("#inputBroker").find("option:selected").text();
+    product=$("#inputProduct").find("option:selected").text();
+    period=$("#inputPeriod").find("option:selected").text();
+
+    var quantityStr=$("input[name='quantity']").val();
+    quantity=Number(quantityStr);//输入的string转换成int,如果输入不能转化成一个number,返回NaN
+
+    var priceStr=$("input[name='price']").val();
+    price=Number(priceStr);//输入的string转换成double
+
     orderType="LimitOrder";
     trader=getCookie("username");
-    traderCompany="MG"
+    tradeCompany="ABC Coop"
 
-    if(broker==''){
-        alert("Please choose a broker");
-        return false;
+    /*取下拉option的text值(就是页面上显示的值),注意也是string类型*/
+    var sideText=$("#inputSide").find("option:selected").text();
+    if(sideText=="Sell-side"){
+        side=Number("0");
     }
-    if(product==''){
-        alert("Please choose a product");
-        return false;
+    else if(sideText=="Buy-side"){
+        side=Number("1");
     }
-    if(period==''){
-        alert("Please input period");
-        return false;
-    }
+
+
+    /*判定quantity、price的输入是否为空,是否为一个number
+    * 注意NaN不能使用==来判定，要用专门的方法isNaN()*/
     if(quantity==''){
         alert("Please input quantity");
         return false;
     }
-    if(price==''){
+    else if(isNaN(quantity)){
+        alert("Please input an int number as quantity");
+        return false;
+    }
+    else if(price==''){
         alert("Please input price");
         return false;
     }
-    if(side==''){
-        alert("Please choose your side");
+    else if(isNaN(price)){
+        alert("Please input a double number as price");
         return false;
     }
 
@@ -90,29 +102,19 @@ jQuery(document).ready($("#summit").click(function(e){
             "price":price,
             "side":side,
             "trader":trader,
-            "traderCompany":traderCompany
+            "tradeCompany":tradeCompany
         }),
-        /*期望后端返回数据类型是json*/
-        dataType:"json",
-        /*后端的响应状态码为200时，表示响应成功，触发success*/
-        success:function(data){
-            var str="";
-            /*服务器返回的data是json形式：
-             * {
-             *    "balance":0,
-             *    "password":"123456",
-             *    "userId":1,
-             *    "username":"user1"
-             *  }*/
-            /*把data中的username取出来存进cookie，作为浏览器关闭前的全局变量*/
-            str+=data.username;//字符串形式
-            addCookie("username",str,0);
+        /*因为此次ajax提交后，后端除了响应状态码之外不会返回任何数据，所以dataType属性这里就不设置了，
+        如果设置了dataType却没接收到返回数据，即使响应状态码是ok200，也会走error*/
 
+        /*后端的响应状态码为200时，表示响应成功，触发success*/
+        success:function(){
+            alert("Order submitted successfully!")
             window.location.href = "home.html";
         },
         /*其他响应状态码，触发error，ajax还会在下列情况走error：1.返回数据类型不是json。2.网络中断。3.后台响应中断。*/
         error:function(){
-            alert("dd");
+            alert("Failed to submit order.");
         }
     })
 }))

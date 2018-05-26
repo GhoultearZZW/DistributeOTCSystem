@@ -83,24 +83,55 @@
             <h2 class="form-limit-heading">Create limit order</h2>
 
             <label for="inputBroker" class="sr-only">Broker</label>
-            <input type="text" id="inputBroker" name="broker" class="form-control" placeholder="Broker" autofocus>
+            <div class="input-group">
+                <span class="input-group-addon">Broker</span>
+                <select class="form-control" id="inputBroker">
+                    <option>M</option>
+                </select>
+            </div>
 
             <label for="inputProduct" class="sr-only">Product</label>
-            <input type="text" id="inputProduct" name="product" class="form-control" placeholder="Product">
+            <div class="input-group">
+                <span class="input-group-addon">Product</span>
+                <select class="form-control" id="inputProduct">
+                    <option>gold</option>
+                    <option>silver</option>
+                    <option>oil</option>
+                    <option>soybean</option>
+                </select>
+            </div>
 
             <label for="inputPeriod" class="sr-only">Period</label>
-            <input type="date" id="inputPeriod" name="period" class="form-control" placeholder="Period">
+            <div class="input-group">
+                <span class="input-group-addon">Period</span>
+                <select class="form-control" id="inputPeriod">
+                    <option>SEP16</option>
+                </select>
+            </div>
 
             <label for="inputQuantity" class="sr-only">Quantity</label>
-            <input type="number" id="inputQuantity" name="quantity" class="form-control" placeholder="Quantity">
+            <div class="input-group">
+                <span class="input-group-addon">Quantity</span>
+                <input type="text" id="inputQuantity" name="quantity" class="form-control">
+            </div>
 
             <label for="inputPrice" class="sr-only">Price</label>
-            <input type="text" id="inputPrice" name="price" class="form-control" placeholder="Price">
+            <div class="input-group">
+                <span class="input-group-addon">Price</span>
+                <input type="text" id="inputPrice" name="price" class="form-control">
+                <span class="input-group-addon">$</span>
+            </div>
 
             <label for="inputSide" class="sr-only">Side</label>
-            <input type="number" id="inputSide" name="side" class="form-control" placeholder="Side">
+            <div class="input-group">
+                <span class="input-group-addon">Side</span>
+                <select class="form-control" id="inputSide">
+                    <option>Sell-side</option>
+                    <option>Buy-side</option>
+                </select>
+            </div>
 
-            <button class="btn btn-lg btn-primary btn-block" type="button" id="summit">Summit order</button>
+            <button class="btn btn-lg btn-primary btn-block" type="button" id="submit">Submit order</button>
         </form>
 
 
