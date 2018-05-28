@@ -18,6 +18,7 @@ public class Blotter {
     private String initiatorCompany;
     private int initiatorSide;
     private String completionCompany;
+    private String completionTrader;
     private int completionSide;
     private String dealTime;
 
@@ -140,5 +141,15 @@ public class Blotter {
 
     public void setDealTime(String dealTime) {
         this.dealTime = dealTime;
+    }
+
+    @Basic
+    @Column(name = "completionTrader")
+    public String getCompletionTrader() {
+        return completionTrader;
+    }
+
+    public void setCompletionTrader(String completionTrader) {
+        this.completionTrader = completionTrader;
     }
 }
