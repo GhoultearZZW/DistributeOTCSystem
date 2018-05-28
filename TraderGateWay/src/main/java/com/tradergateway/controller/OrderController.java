@@ -78,18 +78,89 @@ public class OrderController {
         return new ResponseEntity<JSONArray>(arr,HttpStatus.OK);
     }
 
+    @RequestMapping(value = "depth/marketOrder",method = RequestMethod.POST)
+    public ResponseEntity<Void> getMarketOrder(@RequestBody JSONObject obj){
+        Order order = convertToModel.convertToMarketOrder(obj);
+
+        List<Order> list = orderService.getDepth(order.getProduct(),order.getPeriod());
+
+        List<List<Order>> sepList = new ArrayList<>();
+        List<Order> temp = new ArrayList<>();
+        for(int j =0;j<list.size();j++){
+            if(temp.size()==0 || list.get(j).getPrice()==temp.get(0).getPrice())
+                temp.add(list.get(j));
+            else{
+                sepList.add(temp);
+                logger.info(temp.get(0));
+                temp = new ArrayList<>();
+                temp.add(list.get(j));
+            }
+        }
+        sepList.add(temp);
+
+        int i =0;
+        for(;i<sepList.size();i++){
+            if(sepList.get(i).get(0).getSide()==1)
+                break;
+        }
+
+        int quantity = order.getQuantity();
+        if(order.getSide() == 1){
+            for(int a =i;a>=0;a--){
+                for(int b =0;b<sepList.get(a).size();b++){
+                    Order nowOrder = sepList.get(a).get(b);
+                    if(nowOrder.getQuantity()>quantity){
+                        nowOrder.setQuantity(nowOrder.getQuantity()-quantity);
+                        orderService.updateOrder(nowOrder);
+                        // call user to pay ...
+                        // . . .
+                        // . . .
+                        return new ResponseEntity<Void>(HttpStatus.OK);
+                    }
+                    else{
+                        if(quantity == nowOrder.getQuantity()){
+                            orderService.deleteOrder(nowOrder);
+                            return new ResponseEntity<Void>(HttpStatus.OK);
+                        }
+                        quantity-=nowOrder.getQuantity();
+                        orderService.deleteOrder(nowOrder);
+                    }
+                }
+            }
+        }
+        else if(order.getSide()==0){
+            for(int a = i;a<sepList.size();a++){
+                for(int b =0;b<sepList.get(a).size();b++){
+                    Order nowOrder = sepList.get(a).get(b);
+                    if(nowOrder.getQuantity()>quantity){
+                        nowOrder.setQuantity(nowOrder.getQuantity()-quantity);
+                        orderService.updateOrder(nowOrder);
+                        // call user to pay ...
+                        // . . .
+                        // . . .
+                        return new ResponseEntity<Void>(HttpStatus.OK);
+                    }
+                    else{
+                        if(quantity == nowOrder.getQuantity()){
+                            orderService.deleteOrder(nowOrder);
+                            return new ResponseEntity<Void>(HttpStatus.OK);
+                        }
+                        quantity-=nowOrder.getQuantity();
+                        orderService.deleteOrder(nowOrder);
+                    }
+                }
+            }
+        }
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
     @RequestMapping(value = "depth/limitOrder",method = RequestMethod.POST)
     public ResponseEntity<Void> getLimitOrder(@RequestBody JSONObject obj){
         Order order = convertToModel.convertToLimitOrder(obj);
-        //orderService.saveLimitOrder(order);
 
-        //check if deal if finished
-        // ...
-        // ...
-        // ...
         List<Order> list = orderService.getDepth(order.getProduct(),order.getPeriod());
 
-        logger.info("info"+list.size());
 
         if(list.size()==0){
             orderService.saveLimitOrder(order);
@@ -126,15 +197,20 @@ public class OrderController {
                     int b=0;
                     while(order.getQuantity()>0 && b<sepList.get(a).size()){
                         int num = sepList.get(a).get(b).getQuantity();
+                        logger.info(num);
+                        logger.info(order.getQuantity());
                         if(num > order.getQuantity()){
-                            System.out.println(num-order.getQuantity());
                             sepList.get(a).get(b).setQuantity(num-order.getQuantity());
+                            logger.info(num-order.getQuantity());
                             orderService.updateOrder(sepList.get(a).get(b));
+
                             order.setQuantity(0);
                             return new ResponseEntity<Void>(HttpStatus.OK);
                         }
                         else{
-                            order.setQuantity(order.getQuantity()-num);
+                            int nowQuantity = order.getQuantity()-num;
+                            logger.info("nowQuantity"+nowQuantity);
+                            order.setQuantity(nowQuantity);
                             orderService.deleteOrder(sepList.get(a).get(b));
                         }
                         b++;
@@ -155,9 +231,9 @@ public class OrderController {
                     while(order.getQuantity()>0 && b<sepList.get(a).size()){
                         int num = sepList.get(a).get(b).getQuantity();
                         if(num > order.getQuantity()){
-                            order.setQuantity(0);
                             sepList.get(a).get(b).setQuantity(num-order.getQuantity());
                             orderService.updateOrder(sepList.get(a).get(b));
+                            order.setQuantity(0);
                             return new ResponseEntity<Void>(HttpStatus.OK);
                         }
                         else{
