@@ -1,7 +1,7 @@
 package com.tradergateway.controller;
 
-import com.tradergateway.Tools.CheckDeal;
 import com.tradergateway.Tools.ConvertToModel;
+import com.tradergateway.Tools.IntOrder;
 import com.tradergateway.model.Order;
 import com.tradergateway.service.OrderService;
 import net.sf.json.JSONArray;
@@ -27,6 +27,7 @@ public class OrderController {
     OrderService orderService;
 
     ConvertToModel convertToModel = new ConvertToModel();
+    IntOrder intOrder = new IntOrder();
 
     private static Logger logger = Logger.getLogger(OrderController.class);
 
@@ -78,6 +79,85 @@ public class OrderController {
         return new ResponseEntity<JSONArray>(arr,HttpStatus.OK);
     }
 
+    @RequestMapping(value = "depth/stopOrder",method = RequestMethod.POST)
+    public ResponseEntity<Void> getStopOrder(@RequestBody JSONObject obj){
+        Order order = convertToModel.convertToStopOrder(obj);
+
+        double limitPrice = order.getPrice();
+
+        List<Order> list = orderService.getDepth(order.getProduct(),order.getPeriod());
+
+        List<List<Order>> sepList = intOrder.getIntOrder(list);
+
+        int i =0;
+        for(;i<sepList.size();i++){
+            if(sepList.get(i).get(0).getSide()==1)
+                break;
+        }
+
+        int quantity = order.getQuantity();
+        if(order.getSide() == 1){
+            for(int a =i-1;a>=0;a--){
+                if(sepList.get(a).get(0).getPrice()>=limitPrice){
+                    order.setQuantity(quantity);
+                    order.setStatus(2);
+                    orderService.saveLimitOrder(order);
+                    return new ResponseEntity<Void>(HttpStatus.OK);
+                }
+                for(int b =0;b<sepList.get(a).size();b++){
+                    Order nowOrder = sepList.get(a).get(b);
+                    if(nowOrder.getQuantity()>quantity){
+                        nowOrder.setQuantity(nowOrder.getQuantity()-quantity);
+                        orderService.updateOrder(nowOrder);
+                        // call user to pay ...
+                        // . . .
+                        // . . .
+                        return new ResponseEntity<Void>(HttpStatus.OK);
+                    }
+                    else{
+                        if(quantity == nowOrder.getQuantity()){
+                            orderService.deleteOrder(nowOrder);
+                            return new ResponseEntity<Void>(HttpStatus.OK);
+                        }
+                        quantity-=nowOrder.getQuantity();
+                        orderService.deleteOrder(nowOrder);
+                    }
+                }
+            }
+        }
+        else if(order.getSide()==0){
+            for(int a = i;a<sepList.size();a++){
+                if(sepList.get(a).get(0).getPrice()<=limitPrice){
+                    order.setQuantity(quantity);
+                    order.setStatus(2);
+                    orderService.saveLimitOrder(order);
+                    return new ResponseEntity<Void>(HttpStatus.OK);
+                }
+                for(int b =0;b<sepList.get(a).size();b++){
+                    Order nowOrder = sepList.get(a).get(b);
+                    if(nowOrder.getQuantity()>quantity){
+                        nowOrder.setQuantity(nowOrder.getQuantity()-quantity);
+                        orderService.updateOrder(nowOrder);
+                        // call user to pay ...
+                        // . . .
+                        // . . .
+                        return new ResponseEntity<Void>(HttpStatus.OK);
+                    }
+                    else{
+                        if(quantity == nowOrder.getQuantity()){
+                            orderService.deleteOrder(nowOrder);
+                            return new ResponseEntity<Void>(HttpStatus.OK);
+                        }
+                        quantity-=nowOrder.getQuantity();
+                        orderService.deleteOrder(nowOrder);
+                    }
+                }
+            }
+        }
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
     @RequestMapping(value = "depth/marketOrder",method = RequestMethod.POST)
     public ResponseEntity<Void> getMarketOrder(@RequestBody JSONObject obj){
         Order order = convertToModel.convertToMarketOrder(obj);
@@ -106,7 +186,7 @@ public class OrderController {
 
         int quantity = order.getQuantity();
         if(order.getSide() == 1){
-            for(int a =i;a>=0;a--){
+            for(int a =i-1;a>=0;a--){
                 for(int b =0;b<sepList.get(a).size();b++){
                     Order nowOrder = sepList.get(a).get(b);
                     if(nowOrder.getQuantity()>quantity){
