@@ -144,18 +144,18 @@ body {
     cursor: pointer;
 }
 
-.form-limit {
+.form-order {
     max-width: 330px;
     padding: 10px;
     margin: 0 auto;
 }
-.form-limit .form-limit-heading{
+.form-order .form-order-heading{
     margin-bottom: 10px;
 }
 
 
 
-.form-limit .form-control {
+.form-order .form-control {
     position: relative;
     height: auto;
     -webkit-box-sizing: border-box;
@@ -164,7 +164,7 @@ body {
     padding: 10px;
     font-size: 16px;
 }
-.form-limit .form-control:focus {
+.form-order .form-control:focus {
     z-index: 2;
 }
 .input-group {

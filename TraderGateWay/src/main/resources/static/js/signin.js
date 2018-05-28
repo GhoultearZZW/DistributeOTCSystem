@@ -80,10 +80,6 @@ jQuery(document).ready(
         if (13 == code) {
             signin()
         }
-    }),
-
-    $("#summite").click(function(e){
-        alert("xixixi");
     })
 );
 

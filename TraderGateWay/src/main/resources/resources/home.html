@@ -24,8 +24,8 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Order <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">Market Order</a></li>
-                                <li id="limitOrderWindow"><a href="" onclick="return false">Limit Order</a></li>
+                                <li id="openMarketModal"><a href="" onclick="return false">Market Order</a></li>
+                                <li id="openLimitModal"><a href="" onclick="return false">Limit Order</a></li>
                                 <li><a href="#" onclick="return false">Stop Order</a></li>
                                 <li><a href="#">Stop Limit Order</a></li>
                                 <li role="separator" class="divider"></li>
@@ -48,52 +48,77 @@
     <!-- Three columns of text below the carousel -->
     <div class="row">
         <div class="col-lg-3">
-            <img class="img-circle" src="/image/gold.jpg" width="140" height="140">
+            <img class="img-circle" src="/image/gold.jpg" width="180" height="180">
             <h2>Gold</h2>
-            <p><a class="btn btn-default" href="#" role="button">Market depth &raquo;</a></p>
+
+            <div class="input-group">
+                <select class="form-control" id="goldPeriod" style="z-index:0;">
+                    <option>SEP16</option>
+                    <option>SEP17</option>
+                </select>
+                <span class="input-group-btn"><button class="btn btn-default" id="goldDepth">Market depth &raquo;</button></span>
+            </div>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-3">
-            <img class="img-circle" src="/image/silver.jpg" alt="Generic placeholder image" width="140" height="140">
+            <img class="img-circle" src="/image/silver.jpg" alt="Generic placeholder image" width="180" height="180">
             <h2>Silver</h2>
-            <p><a class="btn btn-default" href="#" role="button">Market depth &raquo;</a></p>
+            <div class="input-group">
+                <select class="form-control" id="silverPeriod" style="z-index:0;">
+                    <option>SEP16</option>
+                    <option>SEP17</option>
+                </select>
+                <span class="input-group-btn"><button class="btn btn-default" id="silverDepth">Market depth &raquo;</button></span>
+            </div>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-3">
-            <img class="img-circle" src="/image/oil.jpg" alt="Generic placeholder image" width="140" height="140">
+            <img class="img-circle" src="/image/oil.jpg" alt="Generic placeholder image" width="180" height="180">
             <h2>Oil</h2>
-            <p><a class="btn btn-default" href="#" role="button">Market depth &raquo;</a></p>
+            <div class="input-group">
+                <select class="form-control" id="oilPeriod" style="z-index:0;">
+                    <option>SEP16</option>
+                    <option>SEP17</option>
+                </select>
+                <span class="input-group-btn"><button class="btn btn-default" id="oilDepth">Market depth &raquo;</button></span>
+            </div>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-3">
-            <img class="img-circle" src="/image/soybean.jpg" width="140" height="140">
+            <img class="img-circle" src="/image/soybean.jpg" width="180" height="180">
             <h2>Soybean</h2>
-            <p><a class="btn btn-default" href="#" role="button">Market depth &raquo;</a></p>
+            <div class="input-group">
+                <select class="form-control" id="soybeanPeriod" style="z-index:0;">
+                    <option>SEP16</option>
+                    <option>SEP17</option>
+                </select>
+                <span class="input-group-btn"><button class="btn btn-default" id="soybeanDepth">Market depth &raquo;</button></span>
+            </div>
         </div>
     </div><!-- /.row -->
 
 </div>
 
-<!-- 弹窗 -->
+<!-- create limit order的弹窗 -->
 <div id="limitModal" class="modal">
 
     <!-- 弹窗内容 -->
     <div class="modal-content">
-        <span class="close">&times;</span>
+        <span class="close" id="closeLimitModal">&times;</span>
 
-        <form class="form-limit" action="" method="post">
+        <form class="form-order" action="" method="post">
 
-            <h2 class="form-limit-heading">Create limit order</h2>
+            <h2 class="form-order-heading">Create limit order</h2>
 
-            <label for="inputBroker" class="sr-only">Broker</label>
+            <label for="inputBrokerForLimit" class="sr-only">Broker</label>
             <div class="input-group">
                 <span class="input-group-addon">Broker</span>
-                <select class="form-control" id="inputBroker">
+                <select class="form-control" id="inputBrokerForLimit">
                     <option>M</option>
                 </select>
             </div>
 
-            <label for="inputProduct" class="sr-only">Product</label>
+            <label for="inputProductForLimit" class="sr-only">Product</label>
             <div class="input-group">
                 <span class="input-group-addon">Product</span>
-                <select class="form-control" id="inputProduct">
+                <select class="form-control" id="inputProductForLimit">
                     <option>gold</option>
                     <option>silver</option>
                     <option>oil</option>
@@ -101,43 +126,107 @@
                 </select>
             </div>
 
-            <label for="inputPeriod" class="sr-only">Period</label>
+            <label for="inputPeriodForLimit" class="sr-only">Period</label>
             <div class="input-group">
                 <span class="input-group-addon">Period</span>
-                <select class="form-control" id="inputPeriod">
+                <select class="form-control" id="inputPeriodForLimit">
                     <option>SEP16</option>
                 </select>
             </div>
 
-            <label for="inputQuantity" class="sr-only">Quantity</label>
+            <label for="inputQuantityForLimit" class="sr-only">Quantity</label>
             <div class="input-group">
                 <span class="input-group-addon">Quantity</span>
-                <input type="text" id="inputQuantity" name="quantity" class="form-control">
+                <input type="text" id="inputQuantityForLimit" name="quantity" class="form-control">
             </div>
 
-            <label for="inputPrice" class="sr-only">Price</label>
+            <label for="inputPriceForLimit" class="sr-only">Price</label>
             <div class="input-group">
                 <span class="input-group-addon">Price</span>
-                <input type="text" id="inputPrice" name="price" class="form-control">
+                <input type="text" id="inputPriceForLimit" name="price" class="form-control">
                 <span class="input-group-addon">$</span>
             </div>
 
-            <label for="inputSide" class="sr-only">Side</label>
+            <label for="inputSideForLimit" class="sr-only">Side</label>
             <div class="input-group">
                 <span class="input-group-addon">Side</span>
-                <select class="form-control" id="inputSide">
+                <select class="form-control" id="inputSideForLimit">
                     <option>Sell-side</option>
                     <option>Buy-side</option>
                 </select>
             </div>
 
-            <button class="btn btn-lg btn-primary btn-block" type="button" id="submit">Submit order</button>
+            <button class="btn btn-lg btn-primary btn-block" type="button" id="submitLimit">Submit order</button>
         </form>
 
 
     </div>
 
 </div>
+
+
+<!-- create market order的弹窗 -->
+<div id="marketModal" class="modal">
+
+    <!-- 弹窗内容 -->
+    <div class="modal-content">
+        <span class="close" id="closeMarketModal">&times;</span>
+
+        <form class="form-order" action="" method="post">
+
+            <h2 class="form-order-heading">Create market order</h2>
+
+            <label for="inputBrokerForMarket" class="sr-only">Broker</label>
+            <div class="input-group">
+                <span class="input-group-addon">Broker</span>
+                <select class="form-control" id="inputBrokerForMarket">
+                    <option>M</option>
+                </select>
+            </div>
+
+            <label for="inputProductForMarket" class="sr-only">Product</label>
+            <div class="input-group">
+                <span class="input-group-addon">Product</span>
+                <select class="form-control" id="inputProductForMarket">
+                    <option>gold</option>
+                    <option>silver</option>
+                    <option>oil</option>
+                    <option>soybean</option>
+                </select>
+            </div>
+
+            <label for="inputPeriodForMarket" class="sr-only">Period</label>
+            <div class="input-group">
+                <span class="input-group-addon">Period</span>
+                <select class="form-control" id="inputPeriodForMarket">
+                    <option>SEP16</option>
+                </select>
+            </div>
+
+            <label for="inputQuantityForMarket" class="sr-only">Quantity</label>
+            <div class="input-group">
+                <span class="input-group-addon">Quantity</span>
+                <input type="text" id="inputQuantityForMarket" name="quantity" class="form-control">
+            </div>
+
+
+            <label for="inputSideForMarket" class="sr-only">Side</label>
+            <div class="input-group">
+                <span class="input-group-addon">Side</span>
+                <select class="form-control" id="inputSideForMarket">
+                    <option>Sell-side</option>
+                    <option>Buy-side</option>
+                </select>
+            </div>
+
+            <button class="btn btn-lg btn-primary btn-block" type="button" id="submitMarket">Submit order</button>
+        </form>
+
+
+    </div>
+
+</div>
+
 
 <!--debug超级大坑，有依赖关系的,必须先加载被依赖的那个js！
     home.js中依赖了jQuery，因此要先引入jQuery再引入home.js，否则home.js中有关jquery的事件将统统无效，比如点击某按钮无响应
