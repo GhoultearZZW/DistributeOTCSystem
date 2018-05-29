@@ -211,7 +211,7 @@ jQuery(document).ready(
 
     /*click事件3：点击获取gold market depth按钮*/
     $("#goldDepth").click(function(e) {
-        alert("xixixi");
+        window.location.href="depth.html";
     })
 
 

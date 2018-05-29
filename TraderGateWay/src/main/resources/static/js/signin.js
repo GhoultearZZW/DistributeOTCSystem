@@ -50,7 +50,7 @@ var signin=function(e){
         /*后端的响应状态码为200时，表示响应成功，触发success*/
         success:function(response){
             var username="";
-            /*服务器返回的response数据是json形式：
+            /*服务器返回的response数据是json对象：
             * {
             *    "balance":0,
             *    "password":"123456",
