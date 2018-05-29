@@ -32,4 +32,8 @@ public class TraderService {
         }
         return JSONObject.fromObject(trader);
     }
+
+    public String getCompanyByUsername(String username){
+        return traderRepository.getTraderByUsername(username).getCompany();
+    }
 }

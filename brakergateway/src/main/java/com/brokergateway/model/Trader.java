@@ -12,6 +12,7 @@ public class Trader {
     private String username;
     private String password;
     private double balance;
+    private String company;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,5 +53,15 @@ public class Trader {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    @Basic
+    @Column(name = "company",nullable = true)
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
     }
 }

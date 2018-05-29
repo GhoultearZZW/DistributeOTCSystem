@@ -22,7 +22,6 @@ public class ConvertToModel {
         order.setPrice(obj.getDouble("price"));
         order.setSide(obj.getInt("side"));
         order.setTrader((String)obj.get("trader"));
-        order.setTradeCompany((String)obj.get("tradeCompany"));
         order.setStatus(1);
 
         if(obj.containsKey("orderId")){

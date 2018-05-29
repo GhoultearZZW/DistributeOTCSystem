@@ -19,6 +19,7 @@ public class TraderService {
         trader.setBalance(0.0);
         trader.setUsername((String)obj.get("username"));
         trader.setPassword((String)obj.get("password"));
+        trader.setCompany((String)obj.get("company"));
         traderRepository.saveAndFlush(trader);
         return JSONObject.fromObject(trader);
     }
@@ -31,5 +32,9 @@ public class TraderService {
             return null;
         }
         return JSONObject.fromObject(trader);
+    }
+
+    public String getCompanyByUsername(String username){
+        return traderRepository.getTraderByUsername(username).getCompany();
     }
 }

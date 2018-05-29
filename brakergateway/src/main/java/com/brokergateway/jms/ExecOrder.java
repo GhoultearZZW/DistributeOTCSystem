@@ -7,6 +7,7 @@ import com.brokergateway.model.Blotter;
 import com.brokergateway.model.Order;
 import com.brokergateway.service.BlotterService;
 import com.brokergateway.service.OrderService;
+import com.brokergateway.service.TraderService;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,8 @@ public class ExecOrder {
     OrderService orderService;
     @Autowired
     BlotterService blotterService;
+    @Autowired
+    TraderService traderService;
 
     private ConvertToModel convertToModel = new ConvertToModel();
     private ConvertBlotter convertBlotter = new ConvertBlotter();
@@ -40,8 +43,12 @@ public class ExecOrder {
     public void execMarketOrder(JSONObject obj){
         Order order = convertToModel.convertToMarketOrder(obj);
 
+        traderService = execOrder.traderService;
         orderService = execOrder.orderService;
         blotterService = execOrder.blotterService;
+
+        String company = traderService.getCompanyByUsername(order.getTrader());
+        order.setTradeCompany(company);
 
         List<Order> list = orderService.getDepth(order.getProduct(),order.getPeriod());
 
@@ -114,8 +121,12 @@ public class ExecOrder {
     public void execStopOrder(JSONObject obj){
         Order order = convertToModel.convertToStopOrder(obj);
 
+        traderService = execOrder.traderService;
         orderService = execOrder.orderService;
         blotterService = execOrder.blotterService;
+
+        String company = traderService.getCompanyByUsername(order.getTrader());
+        order.setTradeCompany(company);
 
         double limitPrice = order.getPrice();
 
@@ -203,7 +214,11 @@ public class ExecOrder {
         Order order = convertToModel.convertToLimitOrder(obj);
 
         orderService = execOrder.orderService;
+        traderService = execOrder.traderService;
         blotterService = execOrder.blotterService;
+
+        String company = traderService.getCompanyByUsername(order.getTrader());
+        order.setTradeCompany(company);
 
         List<Order> list = orderService.getDepth(order.getProduct(),order.getPeriod());
 
