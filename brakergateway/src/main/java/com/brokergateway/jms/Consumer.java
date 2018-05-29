@@ -1,8 +1,6 @@
 package com.brokergateway.jms;
 
-import com.brokergateway.service.testService;
 import net.sf.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 

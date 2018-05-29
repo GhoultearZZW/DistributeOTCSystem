@@ -1,6 +1,8 @@
 package com.brokergateway.Tools;
 
 import com.brokergateway.model.Order;
+import com.brokergateway.model.Trader;
+import com.brokergateway.model.TraderOrder;
 import net.sf.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -10,6 +12,24 @@ import java.util.Date;
  * Created by homepppp on 2018/5/24.
  */
 public class ConvertToModel {
+
+    public TraderOrder convertToInitOrder(Order order){
+        TraderOrder traderOrder = new TraderOrder();
+
+        traderOrder.setTradeCompany(order.getTradeCompany());
+        traderOrder.setBroker(order.getBroker());
+        traderOrder.setOrderTime(order.getOrderTime());
+        traderOrder.setQuantity(order.getQuantity());
+        traderOrder.setPrice(order.getPrice());
+        traderOrder.setOrderType(order.getOrderType());
+        traderOrder.setPeriod(order.getPeriod());
+        traderOrder.setProduct(order.getProduct());
+        traderOrder.setSide(order.getSide());
+        traderOrder.setTrader(order.getTrader());
+        traderOrder.setRestQuantity(order.getQuantity());
+
+        return traderOrder;
+    }
 
     public Order convertToStopOrder(JSONObject obj){
         Order order = new Order();
