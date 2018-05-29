@@ -1,13 +1,12 @@
-package com.tradergateway;
+package com.brokergateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-public class TraderApplication {
+public class BrakergatewayApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(TraderApplication.class, args);
+		SpringApplication.run(BrakergatewayApplication.class, args);
 	}
 }

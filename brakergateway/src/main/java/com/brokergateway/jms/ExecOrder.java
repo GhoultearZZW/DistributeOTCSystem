@@ -1,112 +1,121 @@
-package com.tradergateway.controller;
+package com.brokergateway.jms;
 
-import com.tradergateway.Tools.ConvertBlotter;
-import com.tradergateway.Tools.ConvertToModel;
-import com.tradergateway.Tools.IntOrder;
-import com.tradergateway.model.Blotter;
-import com.tradergateway.model.Order;
-import com.tradergateway.service.BlotterService;
-import com.tradergateway.service.OrderService;
-import com.tradergateway.service.ProducerService;
-import net.sf.json.JSONArray;
+import com.brokergateway.Tools.ConvertBlotter;
+import com.brokergateway.Tools.ConvertToModel;
+import com.brokergateway.Tools.IntOrder;
+import com.brokergateway.model.Blotter;
+import com.brokergateway.model.Order;
+import com.brokergateway.service.BlotterService;
+import com.brokergateway.service.OrderService;
 import net.sf.json.JSONObject;
-import org.apache.activemq.command.ActiveMQQueue;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Component;
 
-import javax.jms.Destination;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import javax.annotation.PostConstruct;
+import java.util.List;
 
 /**
- * Created by homepppp on 2018/5/24.
+ * Created by homepppp on 2018/5/29.
  */
-@RestController
-public class OrderController {
-
+@Component
+public class ExecOrder {
     @Autowired
     OrderService orderService;
     @Autowired
     BlotterService blotterService;
-    @Autowired
-    ProducerService producerService;
 
     private ConvertToModel convertToModel = new ConvertToModel();
-    private IntOrder intOrder = new IntOrder();
     private ConvertBlotter convertBlotter = new ConvertBlotter();
+    private IntOrder intOrder = new IntOrder();
 
-    private static Logger logger = Logger.getLogger(OrderController.class);
+    public static ExecOrder execOrder;
 
-    @RequestMapping(value = "depth",method = RequestMethod.POST)
-    public ResponseEntity<JSONArray> getDepth(@RequestBody JSONObject obj){
-        JSONArray arr = new JSONArray();
-        String product = (String) obj.get("product");
-        String period = (String) obj.get("period");
-        List<Order> list = orderService.getDepth(product,period);
-        List<List<Order>> sepList = new ArrayList<>();
-        List<Order> temp = new ArrayList<>();
+    @PostConstruct
+    public void init(){
+        execOrder = this;
+    }
 
-        for(int j =0;j<list.size();j++){
-            if(temp.size()==0 || list.get(j).getPrice()==temp.get(0).getPrice()) {
-                temp.add(list.get(j));
-                logger.info(list.get(j).getPrice()+"  "+temp.get(0).getPrice());
-            }
-            else{
-                sepList.add(temp);
-                logger.info(sepList.get(0).get(0).getPrice());
-                temp = new ArrayList<>();
-                temp.add(list.get(j));
-            }
-        }
-        logger.info("--------------------------------------------------");
-        if(temp.size()>0)
-            sepList.add(temp);
-        logger.info("--------------------------------------------------");
-        //logger.info("finish sepList size =" + sepList.get(0).size());
+    public void execMarketOrder(JSONObject obj){
+        Order order = convertToModel.convertToMarketOrder(obj);
+
+        orderService = execOrder.orderService;
+        blotterService = execOrder.blotterService;
+
+        List<Order> list = orderService.getDepth(order.getProduct(),order.getPeriod());
+
+        List<List<Order>> sepList = intOrder.getIntOrder(list);
+
         int i =0;
         for(;i<sepList.size();i++){
             if(sepList.get(i).get(0).getSide()==1)
                 break;
         }
-        logger.info("--------------------------------------------------");
-        for(int a = 0;a<sepList.size();a++){
-            int sum =0;
-            for(int b =0;b<sepList.get(a).size();b++){
-                sum+=sepList.get(a).get(b).getQuantity();
+
+        int quantity = order.getQuantity();
+        if(order.getSide() == 1){
+            for(int a =i-1;a>=0;a--){
+                for(int b =0;b<sepList.get(a).size();b++){
+                    Order nowOrder = sepList.get(a).get(b);
+                    if(nowOrder.getQuantity()>quantity){
+                        nowOrder.setQuantity(nowOrder.getQuantity()-quantity);
+                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),quantity,nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
+                        blotterService.saveBlotter(blotter);
+                        orderService.updateOrder(nowOrder);
+                        // call user to pay ...
+                        // . . .
+                        // . . .
+                        return;
+                    }
+                    else{
+                        if(quantity == nowOrder.getQuantity()){
+                            orderService.deleteOrder(nowOrder);
+                            return;
+                        }
+                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),nowOrder.getQuantity(),nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
+                        blotterService.saveBlotter(blotter);
+                        quantity-=nowOrder.getQuantity();
+                        orderService.deleteOrder(nowOrder);
+                    }
+                }
             }
-            JSONObject deal = new JSONObject();
-            deal.put("price",sepList.get(a).get(0).getPrice());
-            if(a<i)
-                deal.put("Sell Vol",sum);
-            else
-                deal.put("Buy Vol",sum);
-            arr.add(deal);
         }
-        return new ResponseEntity<JSONArray>(arr,HttpStatus.OK);
+        else if(order.getSide()==0){
+            for(int a = i;a<sepList.size();a++){
+                for(int b =0;b<sepList.get(a).size();b++){
+                    Order nowOrder = sepList.get(a).get(b);
+                    if(nowOrder.getQuantity()>quantity){
+                        nowOrder.setQuantity(nowOrder.getQuantity()-quantity);
+                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),quantity,nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
+                        blotterService.saveBlotter(blotter);
+                        orderService.updateOrder(nowOrder);
+                        // call user to pay ...
+                        // . . .
+                        // . . .
+                        return;
+                    }
+                    else{
+                        if(quantity == nowOrder.getQuantity()){
+                            orderService.deleteOrder(nowOrder);
+                            return;
+                        }
+                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),nowOrder.getQuantity(),nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
+                        blotterService.saveBlotter(blotter);
+                        quantity-=nowOrder.getQuantity();
+                        orderService.deleteOrder(nowOrder);
+                    }
+                }
+            }
+        }
     }
 
-    @RequestMapping(value = "depth/order",method = RequestMethod.POST)
-    public ResponseEntity<Void> sendOrder(@RequestBody JSONObject obj){
-        Destination destination = new ActiveMQQueue("mytest.queue");
-        producerService.sendMessage(destination,obj);
-        return new ResponseEntity<Void>(HttpStatus.OK);
-    }
 
-    @RequestMapping(value = "depth/stopOrder",method = RequestMethod.POST)
-    public ResponseEntity<Void> getStopOrder(@RequestBody JSONObject obj){
-        Destination destination = new ActiveMQQueue("mytest.queue");
-        producerService.sendMessage(destination,obj);
-        int x =1;
-        if(x==1)
-            return new ResponseEntity<Void>(HttpStatus.OK);
-
+    public void execStopOrder(JSONObject obj){
         Order order = convertToModel.convertToStopOrder(obj);
+
+        orderService = execOrder.orderService;
+        blotterService = execOrder.blotterService;
 
         double limitPrice = order.getPrice();
 
@@ -127,7 +136,7 @@ public class OrderController {
                     order.setQuantity(quantity);
                     order.setStatus(2);
                     orderService.saveLimitOrder(order);
-                    return new ResponseEntity<Void>(HttpStatus.OK);
+                    return;
                 }
                 for(int b =0;b<sepList.get(a).size();b++){
                     Order nowOrder = sepList.get(a).get(b);
@@ -139,12 +148,12 @@ public class OrderController {
                         // call user to pay ...
                         // . . .
                         // . . .
-                        return new ResponseEntity<Void>(HttpStatus.OK);
+                        return;
                     }
                     else{
                         if(quantity == nowOrder.getQuantity()){
                             orderService.deleteOrder(nowOrder);
-                            return new ResponseEntity<Void>(HttpStatus.OK);
+                            return ;
                         }
                         Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),nowOrder.getQuantity(),nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
                         blotterService.saveBlotter(blotter);
@@ -160,7 +169,7 @@ public class OrderController {
                     order.setQuantity(quantity);
                     order.setStatus(2);
                     orderService.saveLimitOrder(order);
-                    return new ResponseEntity<Void>(HttpStatus.OK);
+                    return;
                 }
                 for(int b =0;b<sepList.get(a).size();b++){
                     Order nowOrder = sepList.get(a).get(b);
@@ -172,12 +181,12 @@ public class OrderController {
                         // call user to pay ...
                         // . . .
                         // . . .
-                        return new ResponseEntity<Void>(HttpStatus.OK);
+                        return;
                     }
                     else{
                         if(quantity == nowOrder.getQuantity()){
                             orderService.deleteOrder(nowOrder);
-                            return new ResponseEntity<Void>(HttpStatus.OK);
+                            return;
                         }
                         Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),nowOrder.getQuantity(),nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
                         blotterService.saveBlotter(blotter);
@@ -187,105 +196,22 @@ public class OrderController {
                 }
             }
         }
-
-        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "depth/marketOrder",method = RequestMethod.POST)
-    public ResponseEntity<Void> getMarketOrder(@RequestBody JSONObject obj){
-        Destination destination = new ActiveMQQueue("mytest.queue");
-        producerService.sendMessage(destination,obj);
-        int x =1;
-        if(x==1)
-            return new ResponseEntity<Void>(HttpStatus.OK);
-
-        Order order = convertToModel.convertToMarketOrder(obj);
-
-        List<Order> list = orderService.getDepth(order.getProduct(),order.getPeriod());
-
-        List<List<Order>> sepList = intOrder.getIntOrder(list);
-
-        int i =0;
-        for(;i<sepList.size();i++){
-            if(sepList.get(i).get(0).getSide()==1)
-                break;
-        }
-
-        int quantity = order.getQuantity();
-        if(order.getSide() == 1){
-            for(int a =i-1;a>=0;a--){
-                for(int b =0;b<sepList.get(a).size();b++){
-                    Order nowOrder = sepList.get(a).get(b);
-                    if(nowOrder.getQuantity()>quantity){
-                        nowOrder.setQuantity(nowOrder.getQuantity()-quantity);
-                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),quantity,nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
-                        blotterService.saveBlotter(blotter);
-                        orderService.updateOrder(nowOrder);
-                        // call user to pay ...
-                        // . . .
-                        // . . .
-                        return new ResponseEntity<Void>(HttpStatus.OK);
-                    }
-                    else{
-                        if(quantity == nowOrder.getQuantity()){
-                            orderService.deleteOrder(nowOrder);
-                            return new ResponseEntity<Void>(HttpStatus.OK);
-                        }
-                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),nowOrder.getQuantity(),nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
-                        blotterService.saveBlotter(blotter);
-                        quantity-=nowOrder.getQuantity();
-                        orderService.deleteOrder(nowOrder);
-                    }
-                }
-            }
-        }
-        else if(order.getSide()==0){
-            for(int a = i;a<sepList.size();a++){
-                for(int b =0;b<sepList.get(a).size();b++){
-                    Order nowOrder = sepList.get(a).get(b);
-                    if(nowOrder.getQuantity()>quantity){
-                        nowOrder.setQuantity(nowOrder.getQuantity()-quantity);
-                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),quantity,nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
-                        blotterService.saveBlotter(blotter);
-                        orderService.updateOrder(nowOrder);
-                        // call user to pay ...
-                        // . . .
-                        // . . .
-                        return new ResponseEntity<Void>(HttpStatus.OK);
-                    }
-                    else{
-                        if(quantity == nowOrder.getQuantity()){
-                            orderService.deleteOrder(nowOrder);
-                            return new ResponseEntity<Void>(HttpStatus.OK);
-                        }
-                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),nowOrder.getQuantity(),nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
-                        blotterService.saveBlotter(blotter);
-                        quantity-=nowOrder.getQuantity();
-                        orderService.deleteOrder(nowOrder);
-                    }
-                }
-            }
-        }
-
-        return new ResponseEntity<Void>(HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "depth/limitOrder",method = RequestMethod.POST)
-    public ResponseEntity<Void> getLimitOrder(@RequestBody JSONObject obj){
-        Destination destination = new ActiveMQQueue("mytest.queue");
-        producerService.sendMessage(destination,obj);
-        int x =1;
-        if(x==1)
-            return new ResponseEntity<Void>(HttpStatus.OK);
+    public void execLimitOrder(JSONObject obj){
 
         Order order = convertToModel.convertToLimitOrder(obj);
 
+        orderService = execOrder.orderService;
+        blotterService = execOrder.blotterService;
+
         List<Order> list = orderService.getDepth(order.getProduct(),order.getPeriod());
 
+        System.out.print(list.size()+"----------------------------------------");
 
         if(list.size()==0){
             orderService.saveLimitOrder(order);
-            return new ResponseEntity<Void>(HttpStatus.OK);
+            return;
         }
 
         List<List<Order>> sepList = intOrder.getIntOrder(list);
@@ -295,12 +221,7 @@ public class OrderController {
             if(sepList.get(i).get(0).getSide()==1)
                 break;
         }
-        logger.info("i="+i);
-        //the position i is the first postion to buy
-        /*if(order.getSide()==0 && (order.getPrice() > sepList.get(i).get(0).getPrice()||i == sepList.size()))
-            orderService.saveLimitOrder(order);*/
         if(order.getSide() == 0){
-            logger.info("do minus for Sell");
             for(int a = i;a<sepList.size();a++){
                 if(sepList.get(a).get(0).getPrice()>=order.getPrice()){
                     int b=0;
@@ -314,11 +235,10 @@ public class OrderController {
                             orderService.updateOrder(nowOrder);
 
                             order.setQuantity(0);
-                            return new ResponseEntity<Void>(HttpStatus.OK);
+                            return;
                         }
                         else{
                             int nowQuantity = order.getQuantity()-num;
-                            logger.info("nowQuantity"+nowQuantity);
                             Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),num,nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
                             blotterService.saveBlotter(blotter);
                             order.setQuantity(nowQuantity);
@@ -329,13 +249,12 @@ public class OrderController {
                 }
                 else{
                     orderService.saveLimitOrder(order);
-                    return new ResponseEntity<Void>(HttpStatus.OK);
+                    return;
                 }
             }
             orderService.saveLimitOrder(order);
         }
         else if(order.getSide() == 1){
-            logger.info("do minus for Buy");
             for(int a =i-1;a>=0;a--){
                 if(sepList.get(a).get(0).getPrice()<=order.getPrice()){
                     int b = 0;
@@ -348,7 +267,7 @@ public class OrderController {
                             Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),order.getQuantity(),nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
                             blotterService.saveBlotter(blotter);
                             order.setQuantity(0);
-                            return new ResponseEntity<Void>(HttpStatus.OK);
+                            return;
                         }
                         else{
                             order.setQuantity(order.getQuantity()-num);
@@ -361,15 +280,10 @@ public class OrderController {
                 }
                 else{
                     orderService.saveLimitOrder(order);
-                    return new ResponseEntity<Void>(HttpStatus.OK);
+                    return;
                 }
             }
             orderService.saveLimitOrder(order);
         }
-
-
-        return new ResponseEntity<Void>(HttpStatus.OK);
-
     }
-
 }
