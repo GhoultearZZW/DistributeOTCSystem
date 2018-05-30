@@ -44,6 +44,10 @@ public class ExecOrder {
         execOrder = this;
     }
 
+    public void execCancelOrder(JSONObject obj){
+
+    }
+
     public void execMarketOrder(JSONObject obj){
         Order order = convertToModel.convertToMarketOrder(obj);
 

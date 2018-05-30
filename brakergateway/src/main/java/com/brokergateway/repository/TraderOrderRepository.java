@@ -34,4 +34,6 @@ public interface TraderOrderRepository extends JpaRepository<TraderOrder,Integer
     @Transactional
     @Query(value = "update trader_order set status=0 where order_time=:orderTime and trader=:trader",nativeQuery = true)
     void stopOrder(@Param("orderTime")String orderTime,@Param("trader")String trader);
+
+
 }
