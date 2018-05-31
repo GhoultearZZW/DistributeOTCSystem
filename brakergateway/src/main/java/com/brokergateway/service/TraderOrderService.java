@@ -29,4 +29,11 @@ public class TraderOrderService {
         traderOrderRepository.finishOrder(date,trader);
     }
 
+    public void cancelOrder(int orderId){
+        traderOrderRepository.cancelOrder(orderId);
+    }
+
+    public TraderOrder getTraderOrderById(int orderId){
+        return traderOrderRepository.getTraderOrder(orderId);
+    }
 }

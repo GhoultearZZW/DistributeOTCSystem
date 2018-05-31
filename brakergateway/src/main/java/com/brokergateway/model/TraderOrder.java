@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "traderOrder",catalog = "")
 public class TraderOrder {
-    private int orderId;
+    private int orderId=0;
     private String orderType;
     private String product;
     private String period;

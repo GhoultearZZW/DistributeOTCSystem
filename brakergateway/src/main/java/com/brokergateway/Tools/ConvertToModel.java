@@ -31,6 +31,10 @@ public class ConvertToModel {
         return traderOrder;
     }
 
+    public int converToCancelOrder(JSONObject obj){
+        return obj.getInt("orderId");
+    }
+
     public Order convertToStopOrder(JSONObject obj){
         Order order = new Order();
 
@@ -47,7 +51,7 @@ public class ConvertToModel {
         if(obj.containsKey("orderId")){
             order.setOrderId(obj.getInt("orderId"));
         }
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
         Date  date = new Date();
         order.setOrderTime(df.format(date));
 
@@ -72,7 +76,7 @@ public class ConvertToModel {
             order.setOrderId(obj.getInt("orderId"));
         }
 
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
         Date date = new Date();
         order.setOrderTime(df.format(date));
 
@@ -94,7 +98,7 @@ public class ConvertToModel {
         if(obj.containsKey("orderId")){
             order.setOrderId(obj.getInt("orderId"));
         }
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
         Date date = new Date();
         order.setOrderTime(df.format(date));
         return order;

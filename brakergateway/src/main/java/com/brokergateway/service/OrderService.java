@@ -43,4 +43,7 @@ public class OrderService {
         orderRepository.updateOrderQuantity(order.getQuantity(),order.getOrderId());
     }
 
+    public void cancelOrder(String trader,String time){
+
+    }
 }

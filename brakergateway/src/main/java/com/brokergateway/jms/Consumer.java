@@ -25,8 +25,7 @@ public class Consumer {
             execOrder.execStopOrder(obj);
         else if(orderType.equals("MarketOrder"))
             execOrder.execMarketOrder(obj);
-        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss:SSS");
-        Date date = new Date();
-        System.out.println(df.format(date));
+        else if(orderType.equals("CancelOrder"))
+            execOrder.execCancelOrder(obj);
     }
 }

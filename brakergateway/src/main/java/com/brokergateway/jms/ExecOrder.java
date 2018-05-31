@@ -45,7 +45,14 @@ public class ExecOrder {
     }
 
     public void execCancelOrder(JSONObject obj){
-
+        int orderId = convertToModel.converToCancelOrder(obj);
+        System.out.println("----------------------------------------");
+        System.out.println(orderId);
+        TraderOrder traderOrder = traderOrderService.getTraderOrderById(orderId);
+        String trader = traderOrder.getTrader();
+        String time = traderOrder.getOrderTime();
+        orderService.cancelOrder(trader,time);
+        traderOrderService.cancelOrder(orderId);
     }
 
     public void execMarketOrder(JSONObject obj){
