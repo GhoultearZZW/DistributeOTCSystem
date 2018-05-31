@@ -1,4 +1,4 @@
-package com.tradergateway.model;
+package com.brokergateway.model;
 
 import javax.persistence.*;
 

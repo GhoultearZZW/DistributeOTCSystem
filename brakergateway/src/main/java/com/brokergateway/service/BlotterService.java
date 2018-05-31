@@ -1,7 +1,7 @@
-package com.tradergateway.service;
+package com.brokergateway.service;
 
-import com.tradergateway.model.Blotter;
-import com.tradergateway.repository.BlotterRepository;
+import com.brokergateway.model.Blotter;
+import com.brokergateway.repository.BlotterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

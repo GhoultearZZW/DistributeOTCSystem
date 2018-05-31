@@ -1,7 +1,7 @@
-package com.tradergateway.service;
+package com.brokergateway.service;
 
-import com.tradergateway.model.Trader;
-import com.tradergateway.repository.TraderRepository;
+import com.brokergateway.model.Trader;
+import com.brokergateway.repository.TraderRepository;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,6 @@ public class TraderService {
         trader.setBalance(0.0);
         trader.setUsername((String)obj.get("username"));
         trader.setPassword((String)obj.get("password"));
-        trader.setCompany((String)obj.get("company"));
         traderRepository.saveAndFlush(trader);
         return JSONObject.fromObject(trader);
     }
