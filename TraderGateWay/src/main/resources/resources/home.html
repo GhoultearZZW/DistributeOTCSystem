@@ -20,18 +20,21 @@
                     <ul class="nav navbar-nav">
                         <li class="active"><a href="#">Home</a></li>
                         <li><a href="#about">About</a></li>
-                        <li><a href="#contact">Contact</a></li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Order <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li id="finishedOrders"><a href="">Finished Orders</a></li>
+                                <li id="cancelledOrders"><a href="">Cancelled Orders</a></li>
+                                <li id="stoppedOrders"><a href="">Stopped Orders</a></li>
+                                <li id="allOrders"><a href="">All Orders</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Create<span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li id="openMarketModal"><a href="" onclick="return false">Market Order</a></li>
                                 <li id="openLimitModal"><a href="" onclick="return false">Limit Order</a></li>
-                                <li><a href="#" onclick="return false">Stop Order</a></li>
-                                <li><a href="#">Stop Limit Order</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li class="dropdown-header">Nav header</li>
-                                <li><a href="#">Separated link</a></li>
-                                <li><a href="#">One more separated link</a></li>
+                                <li id="openStopModal"><a href="" onclick="return false">Stop Order</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -220,6 +223,74 @@
             </div>
 
             <button class="btn btn-lg btn-primary btn-block" type="button" id="submitMarket">Submit order</button>
+        </form>
+
+
+    </div>
+
+</div>
+
+<!-- create stop order的弹窗 -->
+<div id="stopModal" class="modal">
+
+    <!-- 弹窗内容 -->
+    <div class="modal-content">
+        <span class="close" id="closeStopModal">&times;</span>
+
+        <form class="form-order" action="" method="post">
+
+            <h2 class="form-order-heading">Create stop order</h2>
+
+            <label for="inputBrokerForStop" class="sr-only">Broker</label>
+            <div class="input-group">
+                <span class="input-group-addon">Broker</span>
+                <select class="form-control" id="inputBrokerForStop">
+                    <option>M</option>
+                </select>
+            </div>
+
+            <label for="inputProductForStop" class="sr-only">Product</label>
+            <div class="input-group">
+                <span class="input-group-addon">Product</span>
+                <select class="form-control" id="inputProductForStop">
+                    <option>gold</option>
+                    <option>silver</option>
+                    <option>oil</option>
+                    <option>soybean</option>
+                </select>
+            </div>
+
+            <label for="inputPeriodForStop" class="sr-only">Period</label>
+            <div class="input-group">
+                <span class="input-group-addon">Period</span>
+                <select class="form-control" id="inputPeriodForStop">
+                    <option>SEP16</option>
+                </select>
+            </div>
+
+            <label for="inputQuantityForStop" class="sr-only">Quantity</label>
+            <div class="input-group">
+                <span class="input-group-addon">Quantity</span>
+                <input type="text" id="inputQuantityForStop" name="quantity" class="form-control">
+            </div>
+
+            <label for="inputPriceForStop" class="sr-only">Price</label>
+            <div class="input-group">
+                <span class="input-group-addon">Price</span>
+                <input type="text" id="inputPriceForStop" name="price" class="form-control">
+                <span class="input-group-addon">$</span>
+            </div>
+
+            <label for="inputSideForStop" class="sr-only">Side</label>
+            <div class="input-group">
+                <span class="input-group-addon">Side</span>
+                <select class="form-control" id="inputSideForStop">
+                    <option>Sell-side</option>
+                    <option>Buy-side</option>
+                </select>
+            </div>
+
+            <button class="btn btn-lg btn-primary btn-block" type="button" id="submitStop">Submit order</button>
         </form>
 
 

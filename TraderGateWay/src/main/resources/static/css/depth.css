@@ -1,9 +1,4 @@
 body {
-    padding-top: 50px;
-    padding-bottom: 20px;
-}
-
-
-.table >tbody > tr > td {
-    vertical-align: middle;
+    padding-bottom: 40px;
+    padding-top: 40px;
 }

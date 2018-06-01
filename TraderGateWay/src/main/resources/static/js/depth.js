@@ -1,6 +1,16 @@
 /**
  * Created by loumoon on 2018/5/29.
  */
+/*从cookie中取值的函数*/
+function getCookie(name){
+    var strCookie=document.cookie;
+    var arrCookie=strCookie.split("; ");
+    for(var i=0;i<arrCookie.length;i++){
+        var arr=arrCookie[i].split("=");
+        if(arr[0]==name)return arr[1];
+    }
+    return "";
+}
 /*向后台发送ajax请求并用返回值绘制bootstrap表格*/
 var refresh=function() {
     var depth;//全局变量,保存后台响应的depth数据集,其类型是JSON数组(JSONArray)
@@ -14,8 +24,8 @@ var refresh=function() {
         async: false,//我们必须要等接收到后台返回的depth数据集之后才可以执行后面绘制表格的脚本,不然表格将为空
         contentType: "application/json",
         data: JSON.stringify({
-            "period": "SEP16",
-            "product": "gold"
+            "period": depth_period,
+            "product": depth_product
         }),
         dataType: "json",
         /*后端的响应状态码为200时，表示响应成功，触发success*/
@@ -79,5 +89,8 @@ var refresh=function() {
         data: depth
     })
 }
+/*全局变量,请求depth的product和period,保存在cookie中*/
+var depth_product=getCookie("depth_product");
+var depth_period=getCookie("depth_period");
 /*js轮询,每隔1s调用refresh函数,重新进行ajax请求并绘制表格*/
 window.setInterval(refresh,1000);

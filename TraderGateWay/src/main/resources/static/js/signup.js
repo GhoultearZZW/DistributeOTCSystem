@@ -1,14 +1,19 @@
 var signup=function(e){
     var username;
+    var company;
     var password;
     var confirmpassword;
 
     username=$("input[name='username']").val();
+    company=$("input[name='company']").val();
     password=$("input[name='password']").val();
     confirmpassword=$("input[name='confirmpassword']").val();
     if(username==''){
         alert("Please create your username");
         return false;
+    }
+    if(company==''){
+        alert("Please input name of your company");
     }
     if(password==''){
         alert("Please input your password");
@@ -29,6 +34,7 @@ var signup=function(e){
         contentType: "application/json",
         data:JSON.stringify({
             "username":username,
+            "company":company,
             "password":password
         }),
         dataType:"json",
