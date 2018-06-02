@@ -18,14 +18,13 @@
 
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">Home</a></li>
-                        <li><a href="#about">About</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My<span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li id="finishedOrders"><a href="">Finished Orders</a></li>
-                                <li id="cancelledOrders"><a href="">Cancelled Orders</a></li>
-                                <li id="stoppedOrders"><a href="">Stopped Orders</a></li>
+                                <li id="finishedOrders"><a href="finishedOrders.html">Finished Orders</a></li>
+                                <li id="unfinishedOrders"><a href="unfinishedOrders.html">Unfinished Orders</a></li>
+                                <li id="stoppedOrders"><a href="stoppedOrders.html">Stopped Orders</a></li>
+                                <li id="cancelledOrders"><a href="cancelledOrders.html">Cancelled Orders</a></li>
                                 <li id="allOrders"><a href="allOrders.html">All Orders</a></li>
                             </ul>
                         </li>
@@ -35,6 +34,12 @@
                                 <li id="openMarketModal"><a href="" onclick="return false">Market Order</a></li>
                                 <li id="openLimitModal"><a href="" onclick="return false">Limit Order</a></li>
                                 <li id="openStopModal"><a href="" onclick="return false">Stop Order</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">View<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li id="blotter"><a href="blotter.html">Blotter</a></li>
                             </ul>
                         </li>
                     </ul>

@@ -1,5 +1,5 @@
 /**
- * Created by loumoon on 2018/6/1.
+ * Created by loumoon on 2018/6/2.
  */
 /*从cookie中取值的函数*/
 function getCookie(name){
@@ -12,8 +12,8 @@ function getCookie(name){
     return "";
 }
 var username=getCookie("username");
-var urlStr="/user/"+username+"/orders";
-var allOrders;//全局变量,保存后台响应的all orders数据集,其类型是JSON数组(JSONArray)
+var urlStr="/user/"+username+"/orders/cancelled";
+var cancelledOrders;
 
 $.ajax({
     type:"get",
@@ -23,11 +23,11 @@ $.ajax({
 
     /*后端的响应状态码为200时，表示响应成功，触发success*/
     success:function(response){
-        allOrders=response;
+        cancelledOrders=response;
     },
     /*其他响应状态码，触发error，ajax还会在下列情况走error：1.返回数据类型不是json。2.网络中断。3.后台响应中断。*/
     error:function(){
-        alert("Failed to get all orders");
+        alert("Failed to get cancelled orders");
     }
 })
 
@@ -71,8 +71,7 @@ $('#table').bootstrapTable({
         },
         {
             field: 'dealPrice',
-            title: 'dealPrice',
-            sortable:true
+            title: 'dealPrice'
         },
         {
             field: 'side',
@@ -94,18 +93,16 @@ $('#table').bootstrapTable({
         },
         {
             field: 'restQuantity',
-            title: 'restQuantity',
-            sortable:true
+            title: 'restQuantity'
         },
         {
             field: 'status',
-            title: 'status',
-            sortable:true//可按此属性排序
+            title: 'status'
         }],
-    data: allOrders,//数据集
+    data: cancelledOrders,//数据集
     cache:false,//是否使用缓存，默认为true
     toolbar: '#toolbar', //工具按钮放在id为toolbar的div块中
-    striped:false,//是否显示行间隔色
+    striped:true,//是否显示行间隔色
     pagination:true,//分页
     sidePagination: "client",//客户端分页，适合数据量较小的表格
     search:true,//是否显示表格搜索栏，此搜索属于客户端搜索
@@ -117,22 +114,5 @@ $('#table').bootstrapTable({
     clickToSelect:true,//是否启用点击选中行
     sortable:true,//是否启用排序
     sortOrder:"asc",//排序方式
-    sortName:'status',//默认按照status排序
-    rowStyle: function (row, index) {//给不同状态的订单显示不同的颜色
-        //这里有5个取值代表5中颜色['active', 'success', 'info', 'warning', 'danger'];
-        var strColor = "";
-        if (row.status == "0") {
-            strColor = 'success';//finished order，绿色
-        }
-        else if(row.status=="2"){
-            strColor='warning';//stopped order，黄色
-        }
-        else if(row.status=="3"){
-            strColor='danger';//cancelled order，红色
-        }
-        else {
-            return {};//unfinished order，默认白色
-        }
-        return { classes: strColor }
-    },
+    sortName:'orderTime'//默认按照orderTime排序
 })

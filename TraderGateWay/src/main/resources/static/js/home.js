@@ -127,7 +127,7 @@ jQuery(document).ready(
 
         $.ajax({
             type:"post",
-            url:"/depth/limitOrder",
+            url:"/depth/order",
             contentType: "application/json",
             data:JSON.stringify({
                 "broker":broker,
@@ -203,7 +203,7 @@ jQuery(document).ready(
 
         $.ajax({
             type:"post",
-            url:"/depth/marketOrder",
+            url:"/depth/order",
             contentType: "application/json",
             data:JSON.stringify({
                 "broker":broker,
@@ -288,21 +288,9 @@ jQuery(document).ready(
             return false;
         }
 
-        alert(JSON.stringify({
-            "broker":broker,
-            "orderType":orderType,
-            "product":product,
-            "period":period,
-            "quantity":quantity,
-            "price":price,
-            "side":side,
-            "trader":trader,
-            "tradeCompany":tradeCompany
-        }))
-
         $.ajax({
             type:"post",
-            url:"/depth/stopOrder",
+            url:"/depth/order",
             contentType: "application/json",
             data:JSON.stringify({
                 "broker":broker,
