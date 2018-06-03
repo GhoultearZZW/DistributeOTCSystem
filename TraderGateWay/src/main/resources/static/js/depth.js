@@ -1,6 +1,18 @@
 /**
  * Created by loumoon on 2018/5/29.
  */
+/*为cookie赋值的函数*/
+function addCookie(name,value,expiresHours){
+    var cookieString=name+"="+escape(value);
+    //判断是否设置过期时间,如果是0，则cookie在浏览器关闭之前永远有效
+    if(expiresHours>0){
+        var date=new Date();
+        date.setTime(date.getTime+expiresHours*3600*1000);
+        cookieString=cookieString+"; expires="+date.toGMTString();
+    }
+    document.cookie=cookieString;
+}
+
 /*从cookie中取值的函数*/
 function getCookie(name){
     var strCookie=document.cookie;
@@ -87,9 +99,24 @@ var refresh=function() {
                 title: 'Level'
             }],
         data: depth,
-        cache: false,//是否使用缓存，默认为true
-        striped: true,//是否显示行间隔色
-        clickToSelect: true,//是否启用点击选中行
+        cache:false,//是否使用缓存，默认为true
+        toolbar: '#toolbar', //工具按钮放在id为toolbar的div块中
+        striped:false,//是否显示行间隔色
+        pagination:true,//分页
+        sidePagination: "client",//客户端分页，适合数据量较小的表格
+        search:true,//是否显示表格搜索栏，此搜索属于客户端搜索
+        pageSize: 9,//一页的条目数
+        pageNumber:Number(getCookie("depthPageNumber")),
+        showToggle: true,//是否显示详细视图以及切换按钮
+        showColumns:true,//是否显示所有的列
+        showRefresh:false,//是否显示刷新按钮
+        clickToSelect:true,//是否启用点击选中行
+        onPageChange:function(number,size){//当更改页码或页面大小时触发
+            addCookie("depthPageNumber",number,0);
+        }
+    })
+    $("#b").click(function(e){
+        $('#table').bootstrapTable('selectPage', 3);
     })
 }
 /*全局变量,请求depth的product和period,保存在cookie中*/
