@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * Created by homepppp on 2018/5/29.
@@ -42,4 +43,21 @@ public interface TraderOrderRepository extends JpaRepository<TraderOrder,Integer
 
     @Query(value = "select * from trader_order where order_id =:id",nativeQuery = true)
     TraderOrder getTraderOrder(@Param("id")Integer id);
+
+    @Query(value = "select * from trader_order where trader_company =:company",nativeQuery = true)
+    List<TraderOrder> getTradeOrder(@Param("company")String company);
+
+    @Query(value = "select * from trader_order where trader_company =:company and status = 0",nativeQuery = true)
+    List<TraderOrder> getFinishedOrder(@Param("company")String company);
+
+    @Query(value = "select * from trader_order where trader_company =:company and status = 1",nativeQuery = true)
+    List<TraderOrder> getUnfinishedOrder(@Param("company")String company);
+
+    @Query(value = "select * from trader_order where trader_company =:company and status = 2",nativeQuery = true)
+    List<TraderOrder> getStoppedOrder(@Param("company")String company);
+
+    @Query(value = "select * from trader_order where trader_company =:company and status = 3",nativeQuery = true)
+    List<TraderOrder> getCanceledOrder(@Param("company")String company);
+
+
 }
