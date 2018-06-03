@@ -86,7 +86,10 @@ var refresh=function() {
                 field: 'Sell Level',
                 title: 'Level'
             }],
-        data: depth
+        data: depth,
+        cache: false,//是否使用缓存，默认为true
+        striped: true,//是否显示行间隔色
+        clickToSelect: true,//是否启用点击选中行
     })
 }
 /*全局变量,请求depth的product和period,保存在cookie中*/
