@@ -34,4 +34,8 @@ public class BlotterService {
     public List<Blotter> getBlotterByCompanyAsCompletion(String company){
         return blotterRepository.getBlotterByCompanyAsCompletion(company);
     }
+
+    public List<Blotter> getAllBlotter(){
+        return blotterRepository.getAllBlotter();
+    }
 }

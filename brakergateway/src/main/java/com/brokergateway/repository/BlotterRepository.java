@@ -25,4 +25,7 @@ public interface BlotterRepository extends JpaRepository<Blotter,Integer> {
 
     @Query(value = "select * from blotter where completion_company =:company order by deal_time asc",nativeQuery = true)
     List<Blotter> getBlotterByCompanyAsCompletion(@Param("company")String company);
+
+    @Query(value = "select * from blotter order by deal_time asc",nativeQuery = true)
+    List<Blotter> getAllBlotter();
 }

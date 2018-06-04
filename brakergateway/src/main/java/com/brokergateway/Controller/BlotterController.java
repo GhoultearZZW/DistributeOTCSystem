@@ -21,6 +21,12 @@ public class BlotterController {
     @Autowired
     BlotterService blotterService;
 
+    @RequestMapping(value = "/blotter",method = RequestMethod.GET)
+    public ResponseEntity<List<Blotter>> getAllBlotter(){
+        List<Blotter> list = blotterService.getAllBlotter();
+        return new ResponseEntity<>(list,HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/blotter",method = RequestMethod.POST)
     public ResponseEntity<List<Blotter>> getRecentBlotter(@RequestBody JSONObject obj){
         String company = (String)obj.get("company");
@@ -39,6 +45,6 @@ public class BlotterController {
     public ResponseEntity<List<Blotter>> getBlotterAsCompletion(@RequestBody JSONObject obj){
         String company = (String)obj.get("company");
         List<Blotter> list = blotterService.getBlotterByCompanyAsCompletion(company);
-        return new ResponseEntity<List<Blotterco>>(list,HttpStatus.OK);
+        return new ResponseEntity<List<Blotter>>(list,HttpStatus.OK);
     }
 }
