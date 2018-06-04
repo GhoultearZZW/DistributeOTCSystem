@@ -135,6 +135,7 @@ var drawTable=function(e) {
         toolbar: '#toolbar', //工具按钮放在id为toolbar的div块中
         striped: true,//是否显示行间隔色
         pagination: true,//分页
+        paginationLoop:false,//分页条不可循环，比如处于最后一页时无法点击下一页
         sidePagination: "client",//客户端分页，适合数据量较小的表格
         search: true,//是否显示表格搜索栏，此搜索属于客户端搜索
         pageSize: 10,//一页的条目数

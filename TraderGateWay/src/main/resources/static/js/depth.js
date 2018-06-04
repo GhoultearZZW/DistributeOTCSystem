@@ -57,6 +57,7 @@ var refresh=function() {
     /*处理depth,将每一项json增加Buy Level、Sell Level属性,这两个属性是后台传来的json中不包含的*/
     for (var i = 0; i < depth.length; ++i) {
         if (depth[i]["Sell Vol"] == undefined) {
+            marketPricePage=Math.ceil(i/pageSize);//更新market price所在页码，注意js除法结果带小数位，Math.ceil()向上取整
             /*为sell order增加Sell Level属性*/
             for (var j = i - 1; j >= 0; --j) {
                 depth[j]["Buy Vol"] = "";
@@ -80,47 +81,66 @@ var refresh=function() {
         columns: [
             {
                 field: 'Buy Level',
-                title: 'Level'
+                title: 'Level',
+                align: 'center'
             },
             {
                 field: 'Buy Vol',
-                title: 'Buy Vol'
+                title: 'Buy Vol',
+                align: 'center'
             },
             {
                 field: 'price',
-                title: 'Price'
+                title: 'Price',
+                align: 'center',
+                cellStyle:function(value,row,index){
+                    if (row["Sell Level"]==1){
+                        return {classes: 'danger'}
+                    }
+                    else if(row["Sell Level"]==2||row["Sell Level"]==3){
+                        return {classes: 'warning'}
+                    }
+                    else if(row["Buy Level"]==1||row["Buy Level"]==2||row["Buy Level"]==3){
+                        return {classes:'success'}
+                    }
+                    else{
+                        return {}
+                    }
+                }
             },
             {
                 field: 'Sell Vol',
-                title: 'Sell Vol'
+                title: 'Sell Vol',
+                align: 'center'
             },
             {
                 field: 'Sell Level',
-                title: 'Level'
+                title: 'Level',
+                align: 'center'
             }],
         data: depth,
         cache:false,//是否使用缓存，默认为true
-        toolbar: '#toolbar', //工具按钮放在id为toolbar的div块中
-        striped:false,//是否显示行间隔色
+        striped:true,//是否显示行间隔色
         pagination:true,//分页
+        paginationLoop:false,//分页条不可循环，比如处于最后一页时无法点击下一页
+        pageList:[pageSize],//只提供固定pageSize的分页
         sidePagination: "client",//客户端分页，适合数据量较小的表格
-        search:true,//是否显示表格搜索栏，此搜索属于客户端搜索
-        pageSize: 9,//一页的条目数
-        pageNumber:Number(getCookie("depthPageNumber")),
-        showToggle: true,//是否显示详细视图以及切换按钮
-        showColumns:true,//是否显示所有的列
-        showRefresh:false,//是否显示刷新按钮
+        pageSize: pageSize,//一页的条目数
+        pageNumber:depthPageNumber,//初始时显示的页码
         clickToSelect:true,//是否启用点击选中行
         onPageChange:function(number,size){//当更改页码或页面大小时触发
-            addCookie("depthPageNumber",number,0);
+            depthPageNumber=number;
         }
     })
-    $("#b").click(function(e){
-        $('#table').bootstrapTable('selectPage', 3);
+    $("#viewMarketPrice").click(function(e){
+        $('#table').bootstrapTable('selectPage', marketPricePage);
     })
 }
 /*全局变量,请求depth的product和period,保存在cookie中*/
 var depth_product=getCookie("depth_product");
 var depth_period=getCookie("depth_period");
+var depthPageNumber=1;//用户所处的当前页，保存在一个全局变量中，这样每次表格刷新后依然处于用户所在的页码，而不是跳到第一页，一定要有初始化的值1，不然第一次绘表显示时会出错
+var marketPricePage=1;//market price所在的页码，每次绘表都会更新它，便于用户直接跳转到这一页
+var pageSize=9;//每页的行数
 /*js轮询,每隔1s调用refresh函数,重新进行ajax请求并绘制表格*/
 window.setInterval(refresh,1000);
