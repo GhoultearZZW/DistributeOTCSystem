@@ -22,4 +22,16 @@ public class BlotterService {
     public List<Blotter> getBlotters(String product,String period){
         return blotterRepository.getBlotter(product,period);
     }
+
+    public List<Blotter> getBlottersByCompany(String company){
+        return blotterRepository.getBlotterByCompany(company);
+    }
+
+    public List<Blotter> getBlotterByCompanyAsInitiator(String company){
+        return blotterRepository.getBlotterByCompanyAsInitiator(company);
+    }
+
+    public List<Blotter> getBlotterByCompanyAsCompletion(String company){
+        return blotterRepository.getBlotterByCompanyAsCompletion(company);
+    }
 }
