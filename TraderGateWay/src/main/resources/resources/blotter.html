@@ -9,22 +9,26 @@
 <body>
 <div class="container">
     <h1>View Blotter</h1>
+    <form class="form-inline" role="form">
+        <div class="form-group" style="max-width:500px;">
+            <select class="form-control" id="product">
+                <option>gold</option>
+                <option>silver</option>
+                <option>oil</option>
+                <option>soybean</option>
+            </select>
+            <select class="form-control" id="period">
+                <option>SEP16</option>
+                <option>SEP17</option>
+            </select>
+            <button class="btn btn-default" id="blotter">Blotter &raquo;</button>
+        </div>
+    </form>
     <div id="toolbar">
-        <form class="form-inline" role="form">
-            <div class="form-group" style="max-width:500px;">
-                <select class="form-control" id="product">
-                    <option>gold</option>
-                    <option>silver</option>
-                    <option>oil</option>
-                    <option>soybean</option>
-                </select>
-                <select class="form-control" id="period">
-                    <option>SEP16</option>
-                    <option>SEP17</option>
-                </select>
-                <button class="btn btn-default" id="blotter">Blotter &raquo;</button>
-            </div>
-        </form>
+        <a href="home.html" id="home" class="btn btn-default">
+            &laquo; Home
+        </a>
+
     </div>
     <!--响应式table,当列表宽度小于min-width时,可以不对数据换行折叠，使得条目变宽，而是添加水平滚动条效果，保持每行的扁平-->
     <div class="table-responsive">

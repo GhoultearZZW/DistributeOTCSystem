@@ -1,20 +1,54 @@
 /**
  * Created by loumoon on 2018/6/2.
  */
+/*为cookie赋值的函数*/
+function addCookie(name,value,expiresHours){
+    var cookieString=name+"="+escape(value);
+    //判断是否设置过期时间,如果是0，则cookie在浏览器关闭之前永远有效
+    if(expiresHours>0){
+        var date=new Date();
+        date.setTime(date.getTime+expiresHours*3600*1000);
+        cookieString=cookieString+"; expires="+date.toGMTString();
+    }
+    document.cookie=cookieString;
+}
+
+/*从cookie中取值的函数*/
+function getCookie(name){
+    var strCookie=document.cookie;
+    var arrCookie=strCookie.split("; ");
+    for(var i=0;i<arrCookie.length;i++){
+        var arr=arrCookie[i].split("=");
+        if(arr[0]==name)return arr[1];
+    }
+    return "";
+}
+
+$("#product").val(getCookie("blotter_product"));
+$("#period").val(getCookie("blotter_period"));
+
+$("#blotter").click(function(e) {
+    var product=$("#product").find("option:selected").text();
+    var period=$("#period").find("option:selected").text();
+    addCookie("blotter_product",product,0);
+    addCookie("blotter_period",period,0);
+    //drawTable();
+    //window.location.href="blotter.html";
+    location.reload();//刷新页面
+})
 
 
-
-
-
-var drawBlotter=function(e) {
+var drawTable=function(e) {
     var blotter;
+    var blotter_product = getCookie("blotter_product");
+    var blotter_period = getCookie("blotter_period");
     $.ajax({
         type: "post",
         url: "/blotter",
         async: false,
         data: JSON.stringify({
-            "product": "gold",
-            "period": "SEP16"
+            "product": blotter_product,
+            "period": blotter_period
         }),
         contentType: "application/json",
 
@@ -101,6 +135,7 @@ var drawBlotter=function(e) {
         toolbar: '#toolbar', //工具按钮放在id为toolbar的div块中
         striped: true,//是否显示行间隔色
         pagination: true,//分页
+        paginationLoop:false,//分页条不可循环，比如处于最后一页时无法点击下一页
         sidePagination: "client",//客户端分页，适合数据量较小的表格
         search: true,//是否显示表格搜索栏，此搜索属于客户端搜索
         pageSize: 10,//一页的条目数
@@ -114,8 +149,5 @@ var drawBlotter=function(e) {
         sortName: 'dealTime'//默认按照status排序
     })
 }
-$("#blotter").click(function(e) {
-    var product=$("#product").find("option:selected").text();
-    var period=$("#period").find("option:selected").text();
-    drawBlotter();
-})
+
+drawTable();

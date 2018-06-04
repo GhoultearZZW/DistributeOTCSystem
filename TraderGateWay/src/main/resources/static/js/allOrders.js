@@ -107,6 +107,7 @@ $('#table').bootstrapTable({
     toolbar: '#toolbar', //工具按钮放在id为toolbar的div块中
     striped:false,//是否显示行间隔色
     pagination:true,//分页
+    paginationLoop:false,//分页条不可循环，比如处于最后一页时无法点击下一页
     sidePagination: "client",//客户端分页，适合数据量较小的表格
     search:true,//是否显示表格搜索栏，此搜索属于客户端搜索
     pageSize: 10,//一页的条目数
@@ -118,7 +119,7 @@ $('#table').bootstrapTable({
     sortable:true,//是否启用排序
     sortOrder:"asc",//排序方式
     sortName:'status',//默认按照status排序
-    rowStyle: function (row, index) {//给不同状态的订单显示不同的颜色
+    rowStyle: function (row, index) {//rowStyle参数:给不同状态的订单显示不同的颜色
         //这里有5个取值代表5中颜色['active', 'success', 'info', 'warning', 'danger'];
         var strColor = "";
         if (row.status == "0") {
