@@ -22,8 +22,8 @@ public class OrderService {
             orderRepository.saveAndFlush(order);
     }
 
-    public List<Order> getDepth(String product, String period){
-        return orderRepository.getDepth(product,period);
+    public List<Order> getDepth(String product, String period,String broker){
+        return orderRepository.getDepth(product,period,broker);
     }
 
     public void deleteOrder(Order order){

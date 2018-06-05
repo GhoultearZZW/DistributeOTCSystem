@@ -23,19 +23,19 @@ public class BlotterService {
         return blotterRepository.getBlotter(product,period);
     }
 
-    public List<Blotter> getBlottersByCompany(String company){
-        return blotterRepository.getBlotterByCompany(company);
+    public List<Blotter> getBlottersByCompany(String company,String broker){
+        return blotterRepository.getBlotterByCompany(company,broker);
     }
 
-    public List<Blotter> getBlotterByCompanyAsInitiator(String company){
-        return blotterRepository.getBlotterByCompanyAsInitiator(company);
+    public List<Blotter> getBlotterByCompanyAsInitiator(String company,String broker){
+        return blotterRepository.getBlotterByCompanyAsInitiator(company,broker);
     }
 
-    public List<Blotter> getBlotterByCompanyAsCompletion(String company){
-        return blotterRepository.getBlotterByCompanyAsCompletion(company);
+    public List<Blotter> getBlotterByCompanyAsCompletion(String company,String broker){
+        return blotterRepository.getBlotterByCompanyAsCompletion(company,broker);
     }
 
-    public List<Blotter> getAllBlotter(){
-        return blotterRepository.getAllBlotter();
+    public List<Blotter> getAllBlotter(String broker){
+        return blotterRepository.getAllBlotter(broker);
     }
 }

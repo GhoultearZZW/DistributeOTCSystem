@@ -19,7 +19,7 @@ public class BlotterService {
         blotterRepository.saveAndFlush(blotter);
     }
 
-    public List<Blotter> getBlotters(String product,String period){
-        return blotterRepository.getBlotter(product,period);
+    public List<Blotter> getBlotters(String product,String period,String broker){
+        return blotterRepository.getBlotter(product,period,broker);
     }
 }

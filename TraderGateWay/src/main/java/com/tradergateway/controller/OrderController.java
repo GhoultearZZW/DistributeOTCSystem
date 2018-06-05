@@ -56,7 +56,8 @@ public class OrderController {
         JSONArray arr = new JSONArray();
         String product = (String) obj.get("product");
         String period = (String) obj.get("period");
-        List<Order> list = orderService.getDepth(product,period);
+        String broker = (String) obj.get("broker");
+        List<Order> list = orderService.getDepth(product,period,broker);
         List<List<Order>> sepList = new ArrayList<>();
         List<Order> temp = new ArrayList<>();
 

@@ -68,7 +68,7 @@ public class ExecOrder {
 
         TraderOrder traderOrder = convertToModel.convertToInitOrder(order);
 
-        List<Order> list = orderService.getDepth(order.getProduct(),order.getPeriod());
+        List<Order> list = orderService.getDepth(order.getProduct(),order.getPeriod(),order.getBroker());
 
         List<List<Order>> sepList = intOrder.getIntOrder(list);
 
@@ -176,7 +176,7 @@ public class ExecOrder {
 
         double limitPrice = order.getPrice();
 
-        List<Order> list = orderService.getDepth(order.getProduct(),order.getPeriod());
+        List<Order> list = orderService.getDepth(order.getProduct(),order.getPeriod(),order.getBroker());
 
         List<List<Order>> sepList = intOrder.getIntOrder(list);
 
@@ -308,7 +308,7 @@ public class ExecOrder {
         traderOrder.setPrice(order.getPrice());
         traderOrder.setStatus(1);
 
-        List<Order> list = orderService.getDepth(order.getProduct(),order.getPeriod());
+        List<Order> list = orderService.getDepth(order.getProduct(),order.getPeriod(),order.getBroker());
 
         if(list.size()==0){
             orderService.saveLimitOrder(order);
