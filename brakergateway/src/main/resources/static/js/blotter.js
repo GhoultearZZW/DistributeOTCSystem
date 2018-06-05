@@ -24,43 +24,142 @@ function getCookie(name){
     return "";
 }
 
-$("#product").val(getCookie("blotter_product"));
-$("#period").val(getCookie("blotter_period"));
+/*当下拉框选项变成AllTransactions时，将输入框锁定*/
+function selectOnChange(obj){
+    if(obj.options[obj.selectedIndex].text=="AllTransactions"){
+        $("#company").val("");
+        document.getElementById("company").readOnly=true;
+    }
+    if(obj.options[obj.selectedIndex].text=="RestrictParticipator"
+    ||obj.options[obj.selectedIndex].text=="RestrictInitiator"
+    ||obj.options[obj.selectedIndex].text=="RestrictCompletion"){
+        document.getElementById("company").readOnly=false;
+    }
+}
 
-$("#blotter").click(function(e) {
-    var product=$("#product").find("option:selected").text();
-    var period=$("#period").find("option:selected").text();
-    addCookie("blotter_product",product,0);
-    addCookie("blotter_period",period,0);
-    //drawTable();
-    //window.location.href="blotter.html";
+$("#scope").val(getCookie("scope"));
+if(getCookie("scope")=="AllTransactions"){//此时cookie中没有company或者有上次遗留的company，不予显示
+    $("#company").val("");//输入框内容清空
+    document.getElementById("company").readOnly=true;//锁定输入框
+}
+else {
+    $("#company").val(decodeURI(getCookie("company")));
+}
+
+
+$("#view").click(function(e) {
+    var scope=$("#scope").find("option:selected").text();
+    if(scope=="Scope"){
+        alert("Please choose scope!");
+        return false;
+    }
+    if(scope=="AllTransactions"){
+        addCookie("scope",scope,0);
+        //addCookie("company","none",0);
+        location.reload();
+    }
+    else{
+        var company=$("input[id='company']").val();
+        if(company==""){
+            alert("Please input company!");
+            return false;
+        }
+        addCookie("scope",scope,0);
+        addCookie("company",company,0);
+    }
     location.reload();//刷新页面
 })
 
 
 var drawTable=function(e) {
     var blotter;
-    var blotter_product = getCookie("blotter_product");
-    var blotter_period = getCookie("blotter_period");
-    $.ajax({
-        type: "post",
-        url: "/blotter",
-        async: false,
-        data: JSON.stringify({
-            "product": blotter_product,
-            "period": blotter_period
-        }),
-        contentType: "application/json",
+    var scope = getCookie("scope");
+    if(scope=="AllTransactions"){
+        $.ajax({
+            type: "post",
+            url: "/blotter/all",
+            async: false,
+            data: JSON.stringify({
+                "broker":"M"
+            }),
+            contentType: "application/json",
 
-        /*后端的响应状态码为200时，表示响应成功，触发success*/
-        success: function (response) {
-            blotter = response;
-        },
-        /*其他响应状态码，触发error，ajax还会在下列情况走error：1.返回数据类型不是json。2.网络中断。3.后台响应中断。*/
-        error: function () {
-            alert("Failed to get blotter");
-        }
-    })
+            /*后端的响应状态码为200时，表示响应成功，触发success*/
+            success: function (response) {
+                blotter = response;
+            },
+            /*其他响应状态码，触发error，ajax还会在下列情况走error：1.返回数据类型不是json。2.网络中断。3.后台响应中断。*/
+            error: function () {
+                alert("Failed to get blotter!");
+            }
+        })
+    }
+    else if(scope=="RestrictParticipator"){
+        var company=decodeURI(getCookie("company"));
+        $.ajax({
+            type: "post",
+            url: "/blotter",
+            async: false,
+            data: JSON.stringify({
+                "company":company,
+                "broker":"M"
+            }),
+            contentType: "application/json",
+
+            /*后端的响应状态码为200时，表示响应成功，触发success*/
+            success: function (response) {
+                blotter = response;
+            },
+            /*其他响应状态码，触发error，ajax还会在下列情况走error：1.返回数据类型不是json。2.网络中断。3.后台响应中断。*/
+            error: function () {
+                alert("Failed to get blotter!");
+            }
+        })
+    }
+    else if(scope=="RestrictInitiator"){
+        var company=decodeURI(getCookie("company"));
+        $.ajax({
+            type: "post",
+            url: "/blotter/initiator",
+            async: false,
+            data: JSON.stringify({
+                "company":company,
+                "broker":"M"
+            }),
+            contentType: "application/json",
+
+            /*后端的响应状态码为200时，表示响应成功，触发success*/
+            success: function (response) {
+                blotter = response;
+            },
+            /*其他响应状态码，触发error，ajax还会在下列情况走error：1.返回数据类型不是json。2.网络中断。3.后台响应中断。*/
+            error: function () {
+                alert("Failed to get blotter!");
+            }
+        })
+    }
+    else if(scope=="RestrictCompletion"){
+        var company=decodeURI(getCookie("company"));
+        $.ajax({
+            type: "post",
+            url: "/blotter/completion",
+            async: false,
+            data: JSON.stringify({
+                "company":company,
+                "broker":"M"
+            }),
+            contentType: "application/json",
+
+            /*后端的响应状态码为200时，表示响应成功，触发success*/
+            success: function (response) {
+                blotter = response;
+            },
+            /*其他响应状态码，触发error，ajax还会在下列情况走error：1.返回数据类型不是json。2.网络中断。3.后台响应中断。*/
+            error: function () {
+                alert("Failed to get blotter!");
+            }
+        })
+    }
 
 
     /*将json数组depth以表格的形式绘制出来*/
