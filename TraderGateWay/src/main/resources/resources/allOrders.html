@@ -5,6 +5,7 @@
     <title>All Orders</title>
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/bootstrap/css/bootstrap-table.css" rel="stylesheet">
+    <link href="/bootstrap/css/bootstrap-table-filter-control.css" rel="stylesheet">
 </head>
 <body>
 <div class="container">
@@ -16,6 +17,7 @@
     </div>
     <!--响应式table,当列表宽度小于min-width时,可以不对数据换行折叠，使得条目变宽，而是添加水平滚动条效果，保持每行的扁平-->
     <div class="table-responsive">
+        <!--本来打算用下bootstrap-table-filter-control扩展插件，但是发现并不好用-->
         <table id="table" style="min-width:1500px;"></table>
     </div>
 </div>
@@ -23,6 +25,7 @@
 <script type="text/javascript" src="/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/bootstrap/js/bootstrap-table.js"></script>
+<script type="text/javascript" src="/bootstrap/js/bootstrap-table-filter-control.js"></script>
 <script type="text/javascript" src="/js/allOrders.js"></script>
 </body>
 </html>
