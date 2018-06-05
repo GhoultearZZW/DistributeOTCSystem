@@ -26,9 +26,9 @@ public class BlotterController {
     public ResponseEntity<List<Blotter>> getBlotter(@RequestBody JSONObject obj){
         String product = (String)obj.get("product");
         String period = (String)obj.get("period");
+        String broker = (String)obj.get("broker");
 
-        JSONArray arr = new JSONArray();
-        List<Blotter> list = blotterService.getBlotters(product,period);
+        List<Blotter> list = blotterService.getBlotters(product,period,broker);
         return new ResponseEntity<List<Blotter>>(list, HttpStatus.OK);
     }
 }

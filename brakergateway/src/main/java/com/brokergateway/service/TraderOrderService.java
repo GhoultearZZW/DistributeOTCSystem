@@ -40,23 +40,43 @@ public class TraderOrderService {
         return traderOrderRepository.getTraderOrder(orderId);
     }
 
-    public List<TraderOrder> getTraderOrderByCompany(String company){
-        return traderOrderRepository.getTradeOrder(company);
+    public List<TraderOrder> getTraderOrderByCompany(String product,String period,String broker){
+        return traderOrderRepository.getTradeOrder(product,period,broker);
     }
 
-    public List<TraderOrder> getFinishedOrders(String company){
-        return traderOrderRepository.getFinishedOrder(company);
+    public List<TraderOrder> getFinishedOrders(String product,String period,String broker){
+        return traderOrderRepository.getFinishedOrder(product,period,broker);
     }
 
-    public List<TraderOrder> getUnfinishedOrders(String company){
-        return traderOrderRepository.getUnfinishedOrder(company);
+    public List<TraderOrder> getUnfinishedOrders(String product,String period,String broker){
+        return traderOrderRepository.getUnfinishedOrder(product,period,broker);
     }
 
-    public List<TraderOrder> getStoppedOrders(String company){
-        return traderOrderRepository.getStoppedOrder(company);
+    public List<TraderOrder> getStoppedOrders(String product,String period,String broker){
+        return traderOrderRepository.getStoppedOrder(product,period,broker);
     }
 
-    public List<TraderOrder> getCanceledOrders(String company){
-        return traderOrderRepository.getCanceledOrder(company);
+    public List<TraderOrder> getCanceledOrders(String product,String period,String broker){
+        return traderOrderRepository.getCanceledOrder(product,period,broker);
+    }
+
+    public List<TraderOrder> getAllOrder(String broker){
+        return traderOrderRepository.getOrder(broker);
+    }
+
+    public List<TraderOrder> getFinishedAll(String broker){
+        return traderOrderRepository.getFinishedAll(broker);
+    }
+
+    public List<TraderOrder> getUnfinishedAll(String broker){
+        return traderOrderRepository.getUnfinishedAll(broker);
+    }
+
+    public List<TraderOrder> getStoppedAll(String broker){
+        return traderOrderRepository.getStoppedAll(broker);
+    }
+
+    public List<TraderOrder> getCanceledAll(String broker){
+        return traderOrderRepository.getCanceledAll(broker);
     }
 }

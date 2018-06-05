@@ -13,6 +13,6 @@ import java.util.List;
  */
 @Repository
 public interface BlotterRepository extends JpaRepository<Blotter,Integer>{
-    @Query(value = "select * from blotter where product =:product and period =:period order by deal_time asc",nativeQuery = true)
-    List<Blotter> getBlotter(@Param("product")String product,@Param("period")String period);
+    @Query(value = "select * from blotter where product =:product and period =:period and broker =:broker order by deal_time asc",nativeQuery = true)
+    List<Blotter> getBlotter(@Param("product")String product,@Param("period")String period,@Param("broker")String broker);
 }

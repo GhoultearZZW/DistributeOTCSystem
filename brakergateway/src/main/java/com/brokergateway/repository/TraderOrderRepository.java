@@ -44,20 +44,33 @@ public interface TraderOrderRepository extends JpaRepository<TraderOrder,Integer
     @Query(value = "select * from trader_order where order_id =:id",nativeQuery = true)
     TraderOrder getTraderOrder(@Param("id")Integer id);
 
-    @Query(value = "select * from trader_order where trader_company =:company",nativeQuery = true)
-    List<TraderOrder> getTradeOrder(@Param("company")String company);
+    @Query(value = "select * from trader_order where product =:product and period =:period and broker=:broker",nativeQuery = true)
+    List<TraderOrder> getTradeOrder(@Param("product")String product,@Param("period")String period,@Param("broker")String broker);
 
-    @Query(value = "select * from trader_order where trader_company =:company and status = 0",nativeQuery = true)
-    List<TraderOrder> getFinishedOrder(@Param("company")String company);
+    @Query(value = "select * from trader_order where product =:product and period =:period and broker=:broker and status = 0",nativeQuery = true)
+    List<TraderOrder> getFinishedOrder(@Param("product")String product,@Param("period")String period,@Param("broker")String broker);
 
-    @Query(value = "select * from trader_order where trader_company =:company and status = 1",nativeQuery = true)
-    List<TraderOrder> getUnfinishedOrder(@Param("company")String company);
+    @Query(value = "select * from trader_order where  product =:product and period =:period and broker=:broker and status = 1",nativeQuery = true)
+    List<TraderOrder> getUnfinishedOrder(@Param("product")String product,@Param("period")String period,@Param("broker")String broker);
 
-    @Query(value = "select * from trader_order where trader_company =:company and status = 2",nativeQuery = true)
-    List<TraderOrder> getStoppedOrder(@Param("company")String company);
+    @Query(value = "select * from trader_order where  product =:product and period =:period and broker=:broker and status = 2",nativeQuery = true)
+    List<TraderOrder> getStoppedOrder(@Param("product")String product,@Param("period")String period,@Param("broker")String broker);
 
-    @Query(value = "select * from trader_order where trader_company =:company and status = 3",nativeQuery = true)
-    List<TraderOrder> getCanceledOrder(@Param("company")String company);
+    @Query(value = "select * from trader_order where  product =:product and period =:period and broker=:broker and status = 3",nativeQuery = true)
+    List<TraderOrder> getCanceledOrder(@Param("product")String product,@Param("period")String period,@Param("broker")String broker);
 
+    @Query(value = "select * from trader_order where broker =:broker",nativeQuery = true)
+    List<TraderOrder> getOrder(@Param("broker")String broker);
 
+    @Query(value = "select * from trader_order where broker=:broker and status = 0",nativeQuery = true)
+    List<TraderOrder> getFinishedAll(@Param("broker")String broker);
+
+    @Query(value = "select * from trader_order where broker =:broker and status =1",nativeQuery = true)
+    List<TraderOrder> getUnfinishedAll(@Param("broker")String broker);
+
+    @Query(value = "select * from trader_order where broker=:broker and status =2",nativeQuery = true)
+    List<TraderOrder> getStoppedAll(@Param("broker")String broker);
+
+    @Query(value="select * from trader_order where broker=:broker and status =3",nativeQuery = true)
+    List<TraderOrder> getCanceledAll(@Param("broker")String broker);
 }

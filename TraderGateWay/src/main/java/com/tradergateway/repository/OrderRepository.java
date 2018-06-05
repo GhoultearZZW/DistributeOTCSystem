@@ -15,9 +15,9 @@ import java.util.List;
  */
 @Repository
 public interface OrderRepository extends JpaRepository<Order,Integer>{
-    @Query(value = "select * from orders where product =:product and period =:period and status = 1" +
+    @Query(value = "select * from orders where product =:product and period =:period and status = 1 and broker =:broker" +
             " order by price DESC,order_time ASC",nativeQuery = true)
-    List<Order> getDepth(@Param("product")String product,@Param("period")String period);
+    List<Order> getDepth(@Param("product")String product,@Param("period")String period,@Param("broker")String broker);
 
     @Modifying
     @Transactional

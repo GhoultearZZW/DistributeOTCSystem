@@ -1,7 +1,9 @@
 package com.tradergateway.controller;
 
+import com.tradergateway.Async.AsyncConfig;
 import com.tradergateway.Tools.ConvertBlotter;
 import com.tradergateway.Tools.ConvertToModel;
+import com.tradergateway.Tools.GetEndTime;
 import com.tradergateway.Tools.IntOrder;
 import com.tradergateway.model.Blotter;
 import com.tradergateway.model.Order;
@@ -15,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.jms.Destination;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by homepppp on 2018/5/24.
@@ -37,6 +43,8 @@ public class OrderController {
     @Autowired
     ProducerService producerService;
 
+
+    private GetEndTime getEndTime = new GetEndTime();
     private ConvertToModel convertToModel = new ConvertToModel();
     private IntOrder intOrder = new IntOrder();
     private ConvertBlotter convertBlotter = new ConvertBlotter();
@@ -48,7 +56,8 @@ public class OrderController {
         JSONArray arr = new JSONArray();
         String product = (String) obj.get("product");
         String period = (String) obj.get("period");
-        List<Order> list = orderService.getDepth(product,period);
+        String broker = (String) obj.get("broker");
+        List<Order> list = orderService.getDepth(product,period,broker);
         List<List<Order>> sepList = new ArrayList<>();
         List<Order> temp = new ArrayList<>();
 
@@ -64,17 +73,14 @@ public class OrderController {
                 temp.add(list.get(j));
             }
         }
-        logger.info("--------------------------------------------------");
         if(temp.size()>0)
             sepList.add(temp);
-        logger.info("--------------------------------------------------");
         //logger.info("finish sepList size =" + sepList.get(0).size());
         int i =0;
         for(;i<sepList.size();i++){
             if(sepList.get(i).get(0).getSide()==1)
                 break;
         }
-        logger.info("--------------------------------------------------");
         for(int a = 0;a<sepList.size();a++){
             int sum =0;
             for(int b =0;b<sepList.get(a).size();b++){
@@ -93,30 +99,46 @@ public class OrderController {
 
     @RequestMapping(value = "depth/order",method = RequestMethod.POST)
     public ResponseEntity<Void> sendOrder(@RequestBody JSONObject obj){
-        Destination destination = new ActiveMQQueue("mytest.queue");
+        Destination destination = null;
+        destination = new ActiveMQQueue("mytest.queue");
+        if(obj.containsKey("method") &&((String)obj.get("method")).equals("TWAP")){
+            ExecutorService service = Executors.newFixedThreadPool(10);
+            TWAP tWapTask = new TWAP(obj,destination);
+            service.execute(tWapTask);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
         producerService.sendMessage(destination,obj);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "depth/stopOrder",method = RequestMethod.POST)
-    public ResponseEntity<Void> getStopOrder(@RequestBody JSONObject obj){
-        Destination destination = new ActiveMQQueue("mytest.queue");
-        producerService.sendMessage(destination,obj);
-        return new ResponseEntity<Void>(HttpStatus.OK);
-    }
 
-    @RequestMapping(value = "depth/marketOrder",method = RequestMethod.POST)
-    public ResponseEntity<Void> getMarketOrder(@RequestBody JSONObject obj){
-        Destination destination = new ActiveMQQueue("mytest.queue");
-        producerService.sendMessage(destination,obj);
-        return new ResponseEntity<Void>(HttpStatus.OK);
-    }
+    //class for TWAP
+    class TWAP implements Runnable{
 
-    @RequestMapping(value = "depth/limitOrder",method = RequestMethod.POST)
-    public ResponseEntity<Void> getLimitOrder(@RequestBody JSONObject obj){
-        Destination destination = new ActiveMQQueue("mytest.queue");
-        producerService.sendMessage(destination,obj);
-        return new ResponseEntity<Void>(HttpStatus.OK);
-    }
+        private JSONObject obj;
+        private Destination destination;
 
+        public TWAP(JSONObject obj,Destination destination){
+            this.obj=obj;
+            this.destination=destination;
+        }
+
+        public void run(){
+            int quantity = obj.getInt("quantity");
+            Date date1 = new Date();
+            Date date2 = getEndTime.getEndTime();
+            int interval = 1000*60*20;
+            long times = 1+(date2.getTime()-date1.getTime())/interval;
+            long oneTimeQuantity = quantity/times;
+            obj.put("quantity",oneTimeQuantity);
+            for(int i =0;i<times;i++) {
+                try {
+                    producerService.sendMessage(destination, obj);
+                    Thread.sleep(interval);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }
