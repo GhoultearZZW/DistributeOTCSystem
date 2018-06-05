@@ -72,17 +72,14 @@ public class OrderController {
                 temp.add(list.get(j));
             }
         }
-        logger.info("--------------------------------------------------");
         if(temp.size()>0)
             sepList.add(temp);
-        logger.info("--------------------------------------------------");
         //logger.info("finish sepList size =" + sepList.get(0).size());
         int i =0;
         for(;i<sepList.size();i++){
             if(sepList.get(i).get(0).getSide()==1)
                 break;
         }
-        logger.info("--------------------------------------------------");
         for(int a = 0;a<sepList.size();a++){
             int sum =0;
             for(int b =0;b<sepList.get(a).size();b++){
@@ -101,8 +98,9 @@ public class OrderController {
 
     @RequestMapping(value = "depth/order",method = RequestMethod.POST)
     public ResponseEntity<Void> sendOrder(@RequestBody JSONObject obj){
-        Destination destination = new ActiveMQQueue("mytest.queue");
-        if(((String)obj.get("method")).equals("TWAP")){
+        Destination destination = null;
+        destination = new ActiveMQQueue("mytest.queue");
+        if(obj.containsKey("method") &&((String)obj.get("method")).equals("TWAP")){
             ExecutorService service = Executors.newFixedThreadPool(10);
             TWAP tWapTask = new TWAP(obj,destination);
             service.execute(tWapTask);
@@ -111,6 +109,9 @@ public class OrderController {
         producerService.sendMessage(destination,obj);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
+
+
+    //class for TWAP
     class TWAP implements Runnable{
 
         private JSONObject obj;
