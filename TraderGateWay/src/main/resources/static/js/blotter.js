@@ -26,12 +26,28 @@ function getCookie(name){
 
 $("#product").val(getCookie("blotter_product"));
 $("#period").val(getCookie("blotter_period"));
+$("#broker").val(getCookie("blotter_broker"));
 
 $("#blotter").click(function(e) {
     var product=$("#product").find("option:selected").text();
     var period=$("#period").find("option:selected").text();
+    var broker=$("#broker").find("option:selected").text();
+    if(product==""||product=="product"){
+        alert("Please choose one product!");
+        return false;
+    }
+    else if(period==""||period=="period"){
+        alert("Please choose one period!");
+        return false;
+    }
+    else if(broker==""||broker=="broker"){
+        alert("Please choose one broker!");
+        return false;
+    }
+
     addCookie("blotter_product",product,0);
     addCookie("blotter_period",period,0);
+    addCookie("blotter_broker",broker,0);
     //drawTable();
     //window.location.href="blotter.html";
     location.reload();//刷新页面
@@ -42,13 +58,15 @@ var drawTable=function(e) {
     var blotter;
     var blotter_product = getCookie("blotter_product");
     var blotter_period = getCookie("blotter_period");
+    var blotter_broker=getCookie("blotter_broker");
     $.ajax({
         type: "post",
         url: "/blotter",
         async: false,
         data: JSON.stringify({
             "product": blotter_product,
-            "period": blotter_period
+            "period": blotter_period,
+            "broker":blotter_broker
         }),
         contentType: "application/json",
 

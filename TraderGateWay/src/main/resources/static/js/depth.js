@@ -37,7 +37,8 @@ var refresh=function() {
         contentType: "application/json",
         data: JSON.stringify({
             "period": depth_period,
-            "product": depth_product
+            "product": depth_product,
+            "broker": depth_broker
         }),
         dataType: "json",
         /*后端的响应状态码为200时，表示响应成功，触发success*/
@@ -139,6 +140,7 @@ var refresh=function() {
 /*全局变量,请求depth的product和period,保存在cookie中*/
 var depth_product=getCookie("depth_product");
 var depth_period=getCookie("depth_period");
+var depth_broker=getCookie("depth_broker");
 var depthPageNumber=1;//用户所处的当前页，保存在一个全局变量中，这样每次表格刷新后依然处于用户所在的页码，而不是跳到第一页，一定要有初始化的值1，不然第一次绘表显示时会出错
 var marketPricePage=1;//market price所在的页码，每次绘表都会更新它，便于用户直接跳转到这一页
 var pageSize=9;//每页的行数
