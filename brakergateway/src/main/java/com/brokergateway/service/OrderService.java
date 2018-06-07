@@ -1,19 +1,13 @@
 package com.brokergateway.service;
 
-import com.brokergateway.Tools.ConvertBlotter;
-import com.brokergateway.Tools.ConvertToModel;
-import com.brokergateway.Tools.IntOrder;
-import com.brokergateway.model.Blotter;
 import com.brokergateway.model.Order;
 import com.brokergateway.repository.OrderRepository;
-import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by homepppp on 2018/5/24.
@@ -45,5 +39,13 @@ public class OrderService {
 
     public void cancelOrder(String trader,String time){
 
+    }
+
+    public List<Map<String,Object>> getAllProducts(){
+        return orderRepository.getAllProducts();
+    }
+
+    public List<Map<String,Object>> getDepthSum(String product,String period,String broker){
+        return orderRepository.getOrderedDepth(product,period,broker);
     }
 }
