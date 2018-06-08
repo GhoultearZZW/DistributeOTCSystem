@@ -18,7 +18,7 @@ public class webSocket {
     private static CopyOnWriteArraySet<webSocket> webSocketSet = new CopyOnWriteArraySet<>();
 
     @OnOpen
-    public void onOpen() {
+    public void onOpen(Session session) {
         this.session = session;
         webSocketSet.add(this);
         System.out.println("webSocket has new connections and total connections:" + webSocketSet.size());
