@@ -15,11 +15,11 @@ public class ProducerService {
     @Autowired
     private JmsMessagingTemplate jmsTemplate;
 
-    public void sendMessage(Destination destination,final JSONObject message){
-        jmsTemplate.convertAndSend(destination,message);
+    public void sendMessage(Destination destination, final JSONObject message) {
+        jmsTemplate.convertAndSend(destination, message);
     }
 
-    public void send(Destination destination,final String str){
-        jmsTemplate.convertAndSend(destination,str);
+    public void send(Destination destination, final String str) {
+        jmsTemplate.convertAndSend(destination, str);
     }
 }

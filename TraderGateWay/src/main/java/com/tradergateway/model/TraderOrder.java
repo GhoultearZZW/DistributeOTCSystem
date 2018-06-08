@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by homepppp on 2018/5/29.
  */
 @Entity
-@Table(name = "traderOrder",catalog = "")
+@Table(name = "traderOrder", catalog = "")
 public class TraderOrder {
     private int orderId;
     private String orderType;
@@ -25,7 +25,7 @@ public class TraderOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "orderId",nullable = false)
+    @Column(name = "orderId", nullable = false)
     public int getOrderId() {
         return orderId;
     }
@@ -35,7 +35,7 @@ public class TraderOrder {
     }
 
     @Basic
-    @Column(name="orderType",nullable = true)
+    @Column(name = "orderType", nullable = true)
     public String getOrderType() {
         return orderType;
     }
@@ -45,7 +45,7 @@ public class TraderOrder {
     }
 
     @Basic
-    @Column(name = "product",nullable = true)
+    @Column(name = "product", nullable = true)
     public String getProduct() {
         return product;
     }
@@ -55,7 +55,7 @@ public class TraderOrder {
     }
 
     @Basic
-    @Column(name = "period",nullable = true)
+    @Column(name = "period", nullable = true)
     public String getPeriod() {
         return period;
     }
@@ -65,7 +65,7 @@ public class TraderOrder {
     }
 
     @Basic
-    @Column(name = "quantity",nullable = true,length = 31)
+    @Column(name = "quantity", nullable = true, length = 31)
     public int getQuantity() {
         return quantity;
     }
@@ -75,7 +75,7 @@ public class TraderOrder {
     }
 
     @Basic
-    @Column(name = "price",nullable = true)
+    @Column(name = "price", nullable = true)
     public double getPrice() {
         return price;
     }
@@ -85,7 +85,7 @@ public class TraderOrder {
     }
 
     @Basic
-    @Column(name = "side",nullable = true,length = 31)
+    @Column(name = "side", nullable = true, length = 31)
     public int getSide() {
         return side;
     }
@@ -95,7 +95,7 @@ public class TraderOrder {
     }
 
     @Basic
-    @Column(name = "orderTime",nullable = true)
+    @Column(name = "orderTime", nullable = true)
     public String getOrderTime() {
         return orderTime;
     }
@@ -105,7 +105,7 @@ public class TraderOrder {
     }
 
     @Basic
-    @Column(name = "trader",nullable = true)
+    @Column(name = "trader", nullable = true)
     public String getTrader() {
         return trader;
     }
@@ -115,7 +115,7 @@ public class TraderOrder {
     }
 
     @Basic
-    @Column(name = "traderCompany",nullable = true)
+    @Column(name = "traderCompany", nullable = true)
     public String getTradeCompany() {
         return tradeCompany;
     }
@@ -125,7 +125,7 @@ public class TraderOrder {
     }
 
     @Basic
-    @Column(name = "broker",nullable = true)
+    @Column(name = "broker", nullable = true)
     public String getBroker() {
         return broker;
     }
@@ -155,7 +155,7 @@ public class TraderOrder {
     }
 
     @Basic
-    @Column(name ="restQuantity")
+    @Column(name = "restQuantity")
     public int getRestQuantity() {
         return restQuantity;
     }

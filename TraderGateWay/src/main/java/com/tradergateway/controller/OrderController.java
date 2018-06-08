@@ -49,92 +49,91 @@ public class OrderController {
 
     private static Logger logger = Logger.getLogger(OrderController.class);
 
-    @RequestMapping(value = "depth",method = RequestMethod.POST)
-    public ResponseEntity<JSONArray> getDepth(@RequestBody JSONObject obj){
+    @RequestMapping(value = "depth", method = RequestMethod.POST)
+    public ResponseEntity<JSONArray> getDepth(@RequestBody JSONObject obj) {
         JSONArray arr = new JSONArray();
         String product = (String) obj.get("product");
         String period = (String) obj.get("period");
         String broker = (String) obj.get("broker");
-        List<Order> list = orderService.getDepth(product,period,broker);
+        List<Order> list = orderService.getDepth(product, period, broker);
         List<List<Order>> sepList = new ArrayList<>();
         List<Order> temp = new ArrayList<>();
 
-        for(int j =0;j<list.size();j++){
-            if(temp.size()==0 || list.get(j).getPrice()==temp.get(0).getPrice()) {
+        for (int j = 0; j < list.size(); j++) {
+            if (temp.size() == 0 || list.get(j).getPrice() == temp.get(0).getPrice()) {
                 temp.add(list.get(j));
-                logger.info(list.get(j).getPrice()+"  "+temp.get(0).getPrice());
-            }
-            else{
+                logger.info(list.get(j).getPrice() + "  " + temp.get(0).getPrice());
+            } else {
                 sepList.add(temp);
                 logger.info(sepList.get(0).get(0).getPrice());
                 temp = new ArrayList<>();
                 temp.add(list.get(j));
             }
         }
-        if(temp.size()>0)
+        if (temp.size() > 0)
             sepList.add(temp);
         //logger.info("finish sepList size =" + sepList.get(0).size());
-        int i =0;
-        for(;i<sepList.size();i++){
-            if(sepList.get(i).get(0).getSide()==1)
+        int i = 0;
+        for (; i < sepList.size(); i++) {
+            if (sepList.get(i).get(0).getSide() == 1)
                 break;
         }
-        for(int a = 0;a<sepList.size();a++){
-            int sum =0;
-            for(int b =0;b<sepList.get(a).size();b++){
-                sum+=sepList.get(a).get(b).getQuantity();
+        for (int a = 0; a < sepList.size(); a++) {
+            int sum = 0;
+            for (int b = 0; b < sepList.get(a).size(); b++) {
+                sum += sepList.get(a).get(b).getQuantity();
             }
             JSONObject deal = new JSONObject();
-            deal.put("price",sepList.get(a).get(0).getPrice());
-            if(a<i)
-                deal.put("Sell Vol",sum);
+            deal.put("price", sepList.get(a).get(0).getPrice());
+            if (a < i)
+                deal.put("Sell Vol", sum);
             else
-                deal.put("Buy Vol",sum);
+                deal.put("Buy Vol", sum);
             arr.add(deal);
         }
-        return new ResponseEntity<JSONArray>(arr,HttpStatus.OK);
+        return new ResponseEntity<JSONArray>(arr, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "depth/order",method = RequestMethod.POST)
-    public ResponseEntity<Void> sendOrder(@RequestBody JSONObject obj){
+    @RequestMapping(value = "depth/order", method = RequestMethod.POST)
+    public ResponseEntity<Void> sendOrder(@RequestBody JSONObject obj) {
         Destination destination = null;
         destination = new ActiveMQQueue("order.queue");
-        if(obj.containsKey("method") &&((String)obj.get("method")).equals("TWAP")){
+        if (obj.containsKey("method") && ((String) obj.get("method")).equals("TWAP")) {
             ExecutorService service = Executors.newFixedThreadPool(10);
-            TWAP tWapTask = new TWAP(obj,destination);
+            TWAP tWapTask = new TWAP(obj, destination);
             service.execute(tWapTask);
             return new ResponseEntity<>(HttpStatus.OK);
         }
         String str = jsonToProtocol.convertToString(obj);
-        producerService.send(destination,str);
+        producerService.send(destination, str);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     //class for TWAP
-    class TWAP implements Runnable{
+    class TWAP implements Runnable {
 
         private JSONObject obj;
         private Destination destination;
 
-        public TWAP(JSONObject obj,Destination destination){
-            this.obj=obj;
-            this.destination=destination;
+        public TWAP(JSONObject obj, Destination destination) {
+            this.obj = obj;
+            this.destination = destination;
         }
 
-        public void run(){
+        public void run() {
             int quantity = obj.getInt("quantity");
             Date date1 = new Date();
             Date date2 = getEndTime.getEndTime();
-            int interval = 1000*60*20;
-            long times = 1+(date2.getTime()-date1.getTime())/interval;
-            long oneTimeQuantity = quantity/times;
-            obj.put("quantity",oneTimeQuantity);
+            int interval = 1000 * 60 * 20;
+            long times = 1 + (date2.getTime() - date1.getTime()) / interval;
+            long oneTimeQuantity = quantity / times;
+            obj.put("quantity", oneTimeQuantity);
             String str = jsonToProtocol.convertToString(obj);
-            for(int i =0;i<times;i++) {
+            for (int i = 0; i < times; i++) {
                 try {
                     producerService.send(destination, str);
                     Thread.sleep(interval);
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

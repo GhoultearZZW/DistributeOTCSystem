@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class BrakergatewayApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(BrakergatewayApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(BrakergatewayApplication.class, args);
+    }
 }

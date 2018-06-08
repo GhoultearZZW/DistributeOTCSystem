@@ -9,8 +9,8 @@ import java.util.Date;
  * Created by homepppp on 2018/5/28.
  */
 public class ConvertBlotter {
-    public Blotter getBlotter(String Product,String Period,String Broker,Double Price,int Quantity,String InitialorTrader,
-                              String InitialCompany,int InitialorSide,String CompleteTrader,String CompleteCompany,int CompleteSide){
+    public Blotter getBlotter(String Product, String Period, String Broker, Double Price, int Quantity, String InitialorTrader,
+                              String InitialCompany, int InitialorSide, String CompleteTrader, String CompleteCompany, int CompleteSide) {
         Blotter blotter = new Blotter();
 
         blotter.setQuantity(Quantity);

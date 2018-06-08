@@ -33,23 +33,23 @@ public class Consumer {
     }*/
 
     @JmsListener(destination = "order.queue")
-    public void receiveQueue(String str){
+    public void receiveQueue(String str) {
         JSONObject obj = new JSONObject();
         obj = protocolToJson.convertToJson(str);
         consumer = this;
-        String orderType = (String)obj.get("orderType");
-        if(orderType.equals("LimitOrder"))
+        String orderType = (String) obj.get("orderType");
+        if (orderType.equals("LimitOrder"))
             execOrder.execLimitOrder(obj);
-        else if(orderType.equals("StopOrder"))
+        else if (orderType.equals("StopOrder"))
             execOrder.execStopOrder(obj);
-        else if(orderType.equals("MarketOrder"))
+        else if (orderType.equals("MarketOrder"))
             execOrder.execMarketOrder(obj);
-        else if(orderType.equals("CancelOrder"))
+        else if (orderType.equals("CancelOrder"))
             execOrder.execCancelOrder(obj);
     }
 
     @JmsListener(destination = "test.queue")
-    public void receiveTest(String str){
+    public void receiveTest(String str) {
         JSONObject obj = new JSONObject();
         obj = protocolToJson.convertToJson(str);
         System.out.println(obj);

@@ -22,13 +22,13 @@ public class BlotterController {
     @Autowired
     BlotterService blotterService;
 
-    @RequestMapping(value = "blotter",method = RequestMethod.POST)
-    public ResponseEntity<List<Blotter>> getBlotter(@RequestBody JSONObject obj){
-        String product = (String)obj.get("product");
-        String period = (String)obj.get("period");
-        String broker = (String)obj.get("broker");
+    @RequestMapping(value = "blotter", method = RequestMethod.POST)
+    public ResponseEntity<List<Blotter>> getBlotter(@RequestBody JSONObject obj) {
+        String product = (String) obj.get("product");
+        String period = (String) obj.get("period");
+        String broker = (String) obj.get("broker");
 
-        List<Blotter> list = blotterService.getBlotters(product,period,broker);
+        List<Blotter> list = blotterService.getBlotters(product, period, broker);
         return new ResponseEntity<List<Blotter>>(list, HttpStatus.OK);
     }
 }

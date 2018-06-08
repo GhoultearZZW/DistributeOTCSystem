@@ -8,17 +8,17 @@ var btn = document.getElementById("myBtn");
 var span = document.querySelector('.close');
 
 // 点击按钮打开弹窗
-btn.onclick = function() {
+btn.onclick = function () {
     modal.style.display = "block";
 }
 
 // 点击 <span> (x), 关闭弹窗
-span.onclick = function() {
+span.onclick = function () {
     modal.style.display = "none";
 }
 
 // 在用户点击其他地方时，关闭弹窗
-window.onclick = function(event) {
+window.onclick = function (event) {
     if (event.target == modal) {
         modal.style.display = "none";
     }

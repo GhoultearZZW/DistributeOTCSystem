@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by homepppp on 2018/5/23.
  */
 @Entity
-@Table(name = "orders",catalog = "")
+@Table(name = "orders", catalog = "")
 public class Order {
     private int orderId;
     private String orderType;
@@ -23,7 +23,7 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "orderId",nullable = false)
+    @Column(name = "orderId", nullable = false)
     public int getOrderId() {
         return orderId;
     }
@@ -33,7 +33,7 @@ public class Order {
     }
 
     @Basic
-    @Column(name="orderType",nullable = true)
+    @Column(name = "orderType", nullable = true)
     public String getOrderType() {
         return orderType;
     }
@@ -43,7 +43,7 @@ public class Order {
     }
 
     @Basic
-    @Column(name = "product",nullable = true)
+    @Column(name = "product", nullable = true)
     public String getProduct() {
         return product;
     }
@@ -53,7 +53,7 @@ public class Order {
     }
 
     @Basic
-    @Column(name = "period",nullable = true)
+    @Column(name = "period", nullable = true)
     public String getPeriod() {
         return period;
     }
@@ -63,7 +63,7 @@ public class Order {
     }
 
     @Basic
-    @Column(name = "quantity",nullable = true,length = 31)
+    @Column(name = "quantity", nullable = true, length = 31)
     public int getQuantity() {
         return quantity;
     }
@@ -73,7 +73,7 @@ public class Order {
     }
 
     @Basic
-    @Column(name = "price",nullable = true)
+    @Column(name = "price", nullable = true)
     public double getPrice() {
         return price;
     }
@@ -83,7 +83,7 @@ public class Order {
     }
 
     @Basic
-    @Column(name = "side",nullable = true,length = 31)
+    @Column(name = "side", nullable = true, length = 31)
     public int getSide() {
         return side;
     }
@@ -93,7 +93,7 @@ public class Order {
     }
 
     @Basic
-    @Column(name = "orderTime",nullable = true)
+    @Column(name = "orderTime", nullable = true)
     public String getOrderTime() {
         return orderTime;
     }
@@ -103,7 +103,7 @@ public class Order {
     }
 
     @Basic
-    @Column(name = "trader",nullable = true)
+    @Column(name = "trader", nullable = true)
     public String getTrader() {
         return trader;
     }
@@ -113,7 +113,7 @@ public class Order {
     }
 
     @Basic
-    @Column(name = "traderCompany",nullable = true)
+    @Column(name = "traderCompany", nullable = true)
     public String getTradeCompany() {
         return tradeCompany;
     }
@@ -123,7 +123,7 @@ public class Order {
     }
 
     @Basic
-    @Column(name = "broker",nullable = true)
+    @Column(name = "broker", nullable = true)
     public String getBroker() {
         return broker;
     }

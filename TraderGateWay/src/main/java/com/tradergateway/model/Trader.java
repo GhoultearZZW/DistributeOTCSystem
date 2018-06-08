@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by homepppp on 2018/5/23.
  */
 @Entity
-@Table(name = "trader",catalog = "")
+@Table(name = "trader", catalog = "")
 public class Trader {
     private Integer userId;
     private String username;
@@ -16,7 +16,7 @@ public class Trader {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userId",nullable = false)
+    @Column(name = "userId", nullable = false)
     public Integer getUserId() {
         return userId;
     }
@@ -26,7 +26,7 @@ public class Trader {
     }
 
     @Basic
-    @Column(name = "username",nullable = false)
+    @Column(name = "username", nullable = false)
     public String getUsername() {
         return username;
     }
@@ -36,7 +36,7 @@ public class Trader {
     }
 
     @Basic
-    @Column(name = "password",nullable = false)
+    @Column(name = "password", nullable = false)
     public String getPassword() {
         return password;
     }
@@ -46,7 +46,7 @@ public class Trader {
     }
 
     @Basic
-    @Column(name = "balance",nullable = false)
+    @Column(name = "balance", nullable = false)
     public double getBalance() {
         return balance;
     }
@@ -56,7 +56,7 @@ public class Trader {
     }
 
     @Basic
-    @Column(name = "company",nullable = true)
+    @Column(name = "company", nullable = true)
     public String getCompany() {
         return company;
     }

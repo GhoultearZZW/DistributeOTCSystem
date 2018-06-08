@@ -15,10 +15,10 @@ import java.util.Map;
  * Created by homepppp on 2018/5/24.
  */
 @Repository
-public interface OrderRepository extends JpaRepository<Order,Integer> {
+public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Query(value = "select * from orders where product =:product and period =:period and status = 1 and broker=:broker" +
             " order by price DESC,order_time ASC", nativeQuery = true)
-    List<Order> getDepth(@Param("product") String product, @Param("period") String period,@Param("broker")String broker);
+    List<Order> getDepth(@Param("product") String product, @Param("period") String period, @Param("broker") String broker);
 
     @Modifying
     @Transactional
@@ -32,13 +32,13 @@ public interface OrderRepository extends JpaRepository<Order,Integer> {
 
     @Modifying
     @Transactional
-    @Query(value = "update orders set status = 0 where trader =:trader and order_time =:time",nativeQuery = true)
-    void cancelOrder(@Param("trader")String trader,@Param("time") String time);
+    @Query(value = "update orders set status = 0 where trader =:trader and order_time =:time", nativeQuery = true)
+    void cancelOrder(@Param("trader") String trader, @Param("time") String time);
 
     @Query(value = "select new map(p.period,p.product,p.broker) from Order p group by p.period,p.product,p.broker")
-    List<Map<String,Object>> getAllProducts();
+    List<Map<String, Object>> getAllProducts();
 
     @Query(value = "select new map(p.side,p.price,sum(p.quantity)) from Order p where p.product=:product and p.period=:period and p.broker=:broker group by " +
             "p.price,p.side,p.quantity order by p.price desc")
-    List<Map<String,Object>> getOrderedDepth(@Param("product")String product,@Param("period")String period,@Param("broker")String broker);
+    List<Map<String, Object>> getOrderedDepth(@Param("product") String product, @Param("period") String period, @Param("broker") String broker);
 }
