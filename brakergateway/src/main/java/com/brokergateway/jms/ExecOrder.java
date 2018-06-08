@@ -40,22 +40,22 @@ public class ExecOrder {
     public static ExecOrder execOrder;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         execOrder = this;
     }
 
-    public void execCancelOrder(JSONObject obj){
+    public void execCancelOrder(JSONObject obj) {
         int orderId = convertToModel.converToCancelOrder(obj);
         System.out.println("----------------------------------------");
         System.out.println(orderId);
         TraderOrder traderOrder = traderOrderService.getTraderOrderById(orderId);
         String trader = traderOrder.getTrader();
         String time = traderOrder.getOrderTime();
-        orderService.cancelOrder(trader,time);
+        orderService.cancelOrder(trader, time);
         traderOrderService.cancelOrder(orderId);
     }
 
-    public void execMarketOrder(JSONObject obj){
+    public void execMarketOrder(JSONObject obj) {
         Order order = convertToModel.convertToMarketOrder(obj);
 
         traderService = execOrder.traderService;
@@ -68,30 +68,30 @@ public class ExecOrder {
 
         TraderOrder traderOrder = convertToModel.convertToInitOrder(order);
 
-        List<Order> list = orderService.getDepth(order.getProduct(),order.getPeriod(),order.getBroker());
+        List<Order> list = orderService.getDepth(order.getProduct(), order.getPeriod(), order.getBroker());
 
         List<List<Order>> sepList = intOrder.getIntOrder(list);
 
-        int i =0;
-        for(;i<sepList.size();i++){
-            if(sepList.get(i).get(0).getSide()==1)
+        int i = 0;
+        for (; i < sepList.size(); i++) {
+            if (sepList.get(i).get(0).getSide() == 1)
                 break;
         }
 
         int quantity = order.getQuantity();
         double dealPrice = 0;
-        if(order.getSide() == 1){
-            for(int a =i-1;a>=0;a--){
-                for(int b =0;b<sepList.get(a).size();b++){
+        if (order.getSide() == 1) {
+            for (int a = i - 1; a >= 0; a--) {
+                for (int b = 0; b < sepList.get(a).size(); b++) {
                     Order nowOrder = sepList.get(a).get(b);
-                    if(nowOrder.getQuantity()>quantity){
-                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),quantity,nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
+                    if (nowOrder.getQuantity() > quantity) {
+                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(), nowOrder.getPeriod(), nowOrder.getBroker(), nowOrder.getPrice(), quantity, nowOrder.getTrader(), nowOrder.getTradeCompany(), nowOrder.getSide(), order.getTrader(), order.getTradeCompany(), order.getSide());
                         blotterService.saveBlotter(blotter);
-                        nowOrder.setQuantity(nowOrder.getQuantity()-quantity);
-                        traderOrderService.updateRestQuantity(nowOrder.getTrader(),nowOrder.getOrderTime(),nowOrder.getQuantity());
+                        nowOrder.setQuantity(nowOrder.getQuantity() - quantity);
+                        traderOrderService.updateRestQuantity(nowOrder.getTrader(), nowOrder.getOrderTime(), nowOrder.getQuantity());
                         orderService.updateOrder(nowOrder);
                         //save traderOrder
-                        dealPrice+=nowOrder.getPrice()*quantity;
+                        dealPrice += nowOrder.getPrice() * quantity;
                         traderOrder.setStatus(0);
                         traderOrder.setDealPrice(dealPrice);
                         traderOrder.setRestQuantity(0);
@@ -100,15 +100,14 @@ public class ExecOrder {
                         // . . .
                         // . . .
                         return;
-                    }
-                    else{
-                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),nowOrder.getQuantity(),nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
+                    } else {
+                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(), nowOrder.getPeriod(), nowOrder.getBroker(), nowOrder.getPrice(), nowOrder.getQuantity(), nowOrder.getTrader(), nowOrder.getTradeCompany(), nowOrder.getSide(), order.getTrader(), order.getTradeCompany(), order.getSide());
                         blotterService.saveBlotter(blotter);
-                        dealPrice+=nowOrder.getPrice()*nowOrder.getQuantity();
-                        quantity-=nowOrder.getQuantity();
+                        dealPrice += nowOrder.getPrice() * nowOrder.getQuantity();
+                        quantity -= nowOrder.getQuantity();
                         orderService.deleteOrder(nowOrder);
-                        traderOrderService.finishOrder(nowOrder.getTrader(),nowOrder.getOrderTime());
-                        if(quantity==0) {
+                        traderOrderService.finishOrder(nowOrder.getTrader(), nowOrder.getOrderTime());
+                        if (quantity == 0) {
                             traderOrder.setStatus(0);
                             traderOrder.setRestQuantity(0);
                             traderOrder.setDealPrice(dealPrice);
@@ -118,19 +117,18 @@ public class ExecOrder {
                     }
                 }
             }
-        }
-        else if(order.getSide()==0){
-            for(int a = i;a<sepList.size();a++){
-                for(int b =0;b<sepList.get(a).size();b++){
+        } else if (order.getSide() == 0) {
+            for (int a = i; a < sepList.size(); a++) {
+                for (int b = 0; b < sepList.get(a).size(); b++) {
                     Order nowOrder = sepList.get(a).get(b);
-                    if(nowOrder.getQuantity()>quantity){
-                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),quantity,nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
+                    if (nowOrder.getQuantity() > quantity) {
+                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(), nowOrder.getPeriod(), nowOrder.getBroker(), nowOrder.getPrice(), quantity, nowOrder.getTrader(), nowOrder.getTradeCompany(), nowOrder.getSide(), order.getTrader(), order.getTradeCompany(), order.getSide());
                         blotterService.saveBlotter(blotter);
-                        nowOrder.setQuantity(nowOrder.getQuantity()-quantity);
-                        traderOrderService.updateRestQuantity(nowOrder.getTrader(),nowOrder.getOrderTime(),nowOrder.getQuantity());
+                        nowOrder.setQuantity(nowOrder.getQuantity() - quantity);
+                        traderOrderService.updateRestQuantity(nowOrder.getTrader(), nowOrder.getOrderTime(), nowOrder.getQuantity());
                         orderService.updateOrder(nowOrder);
                         //save traderOrder
-                        dealPrice+=nowOrder.getPrice()*quantity;
+                        dealPrice += nowOrder.getPrice() * quantity;
                         traderOrder.setStatus(0);
                         traderOrder.setDealPrice(dealPrice);
                         traderOrder.setRestQuantity(0);
@@ -139,15 +137,14 @@ public class ExecOrder {
                         // . . .
                         // . . .
                         return;
-                    }
-                    else{
-                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),nowOrder.getQuantity(),nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
+                    } else {
+                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(), nowOrder.getPeriod(), nowOrder.getBroker(), nowOrder.getPrice(), nowOrder.getQuantity(), nowOrder.getTrader(), nowOrder.getTradeCompany(), nowOrder.getSide(), order.getTrader(), order.getTradeCompany(), order.getSide());
                         blotterService.saveBlotter(blotter);
-                        dealPrice+=nowOrder.getPrice()*nowOrder.getQuantity();
-                        quantity-=nowOrder.getQuantity();
+                        dealPrice += nowOrder.getPrice() * nowOrder.getQuantity();
+                        quantity -= nowOrder.getQuantity();
                         orderService.deleteOrder(nowOrder);
-                        traderOrderService.finishOrder(nowOrder.getTrader(),nowOrder.getOrderTime());
-                        if(quantity==0) {
+                        traderOrderService.finishOrder(nowOrder.getTrader(), nowOrder.getOrderTime());
+                        if (quantity == 0) {
                             traderOrder.setStatus(0);
                             traderOrder.setRestQuantity(0);
                             traderOrder.setDealPrice(dealPrice);
@@ -161,7 +158,7 @@ public class ExecOrder {
     }
 
 
-    public void execStopOrder(JSONObject obj){
+    public void execStopOrder(JSONObject obj) {
         Order order = convertToModel.convertToStopOrder(obj);
 
         traderService = execOrder.traderService;
@@ -176,21 +173,21 @@ public class ExecOrder {
 
         double limitPrice = order.getPrice();
 
-        List<Order> list = orderService.getDepth(order.getProduct(),order.getPeriod(),order.getBroker());
+        List<Order> list = orderService.getDepth(order.getProduct(), order.getPeriod(), order.getBroker());
 
         List<List<Order>> sepList = intOrder.getIntOrder(list);
 
-        int i =0;
-        for(;i<sepList.size();i++){
-            if(sepList.get(i).get(0).getSide()==1)
+        int i = 0;
+        for (; i < sepList.size(); i++) {
+            if (sepList.get(i).get(0).getSide() == 1)
                 break;
         }
 
         int quantity = order.getQuantity();
         double dealPrice = 0; //price for deal
-        if(order.getSide() == 1){
-            for(int a =i-1;a>=0;a--){
-                if(sepList.get(a).get(0).getPrice()>=limitPrice){
+        if (order.getSide() == 1) {
+            for (int a = i - 1; a >= 0; a--) {
+                if (sepList.get(a).get(0).getPrice() >= limitPrice) {
                     order.setQuantity(quantity);
                     order.setStatus(2);
                     orderService.saveLimitOrder(order);
@@ -202,16 +199,16 @@ public class ExecOrder {
                     traderOrderService.saveTraderOrder(traderOrder);
                     return;
                 }
-                for(int b =0;b<sepList.get(a).size();b++){
+                for (int b = 0; b < sepList.get(a).size(); b++) {
                     Order nowOrder = sepList.get(a).get(b);
-                    if(nowOrder.getQuantity()>quantity){
-                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),quantity,nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
+                    if (nowOrder.getQuantity() > quantity) {
+                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(), nowOrder.getPeriod(), nowOrder.getBroker(), nowOrder.getPrice(), quantity, nowOrder.getTrader(), nowOrder.getTradeCompany(), nowOrder.getSide(), order.getTrader(), order.getTradeCompany(), order.getSide());
                         blotterService.saveBlotter(blotter);
-                        nowOrder.setQuantity(nowOrder.getQuantity()-quantity);
-                        traderOrderService.updateRestQuantity(nowOrder.getTrader(),nowOrder.getOrderTime(),nowOrder.getQuantity());
+                        nowOrder.setQuantity(nowOrder.getQuantity() - quantity);
+                        traderOrderService.updateRestQuantity(nowOrder.getTrader(), nowOrder.getOrderTime(), nowOrder.getQuantity());
                         orderService.updateOrder(nowOrder);
                         //save traderOrder
-                        dealPrice+=nowOrder.getPrice()*quantity;
+                        dealPrice += nowOrder.getPrice() * quantity;
                         traderOrder.setStatus(1);
                         traderOrder.setDealPrice(dealPrice);
                         traderOrder.setRestQuantity(0);
@@ -220,15 +217,14 @@ public class ExecOrder {
                         // . . .
                         // . . .
                         return;
-                    }
-                    else{
-                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),nowOrder.getQuantity(),nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
+                    } else {
+                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(), nowOrder.getPeriod(), nowOrder.getBroker(), nowOrder.getPrice(), nowOrder.getQuantity(), nowOrder.getTrader(), nowOrder.getTradeCompany(), nowOrder.getSide(), order.getTrader(), order.getTradeCompany(), order.getSide());
                         blotterService.saveBlotter(blotter);
-                        dealPrice+=nowOrder.getPrice()*nowOrder.getQuantity();
-                        quantity-=nowOrder.getQuantity();
+                        dealPrice += nowOrder.getPrice() * nowOrder.getQuantity();
+                        quantity -= nowOrder.getQuantity();
                         orderService.deleteOrder(nowOrder);
-                        traderOrderService.finishOrder(nowOrder.getTrader(),nowOrder.getOrderTime());
-                        if(quantity==0) {
+                        traderOrderService.finishOrder(nowOrder.getTrader(), nowOrder.getOrderTime());
+                        if (quantity == 0) {
                             traderOrder.setStatus(1);
                             traderOrder.setRestQuantity(0);
                             traderOrder.setDealPrice(dealPrice);
@@ -238,10 +234,9 @@ public class ExecOrder {
                     }
                 }
             }
-        }
-        else if(order.getSide()==0){
-            for(int a = i;a<sepList.size();a++){
-                if(sepList.get(a).get(0).getPrice()<=limitPrice){
+        } else if (order.getSide() == 0) {
+            for (int a = i; a < sepList.size(); a++) {
+                if (sepList.get(a).get(0).getPrice() <= limitPrice) {
                     order.setQuantity(quantity);
                     order.setStatus(2);
                     orderService.saveLimitOrder(order);
@@ -253,16 +248,16 @@ public class ExecOrder {
                     traderOrderService.saveTraderOrder(traderOrder);
                     return;
                 }
-                for(int b =0;b<sepList.get(a).size();b++){
+                for (int b = 0; b < sepList.get(a).size(); b++) {
                     Order nowOrder = sepList.get(a).get(b);
-                    if(nowOrder.getQuantity()>quantity){
-                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),quantity,nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
+                    if (nowOrder.getQuantity() > quantity) {
+                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(), nowOrder.getPeriod(), nowOrder.getBroker(), nowOrder.getPrice(), quantity, nowOrder.getTrader(), nowOrder.getTradeCompany(), nowOrder.getSide(), order.getTrader(), order.getTradeCompany(), order.getSide());
                         blotterService.saveBlotter(blotter);
-                        nowOrder.setQuantity(nowOrder.getQuantity()-quantity);
-                        traderOrderService.updateRestQuantity(nowOrder.getTrader(),nowOrder.getOrderTime(),nowOrder.getQuantity());
+                        nowOrder.setQuantity(nowOrder.getQuantity() - quantity);
+                        traderOrderService.updateRestQuantity(nowOrder.getTrader(), nowOrder.getOrderTime(), nowOrder.getQuantity());
                         orderService.updateOrder(nowOrder);
                         //save traderOrder
-                        dealPrice+=nowOrder.getPrice()*quantity;
+                        dealPrice += nowOrder.getPrice() * quantity;
                         traderOrder.setStatus(1);
                         traderOrder.setDealPrice(dealPrice);
                         traderOrder.setRestQuantity(0);
@@ -271,15 +266,14 @@ public class ExecOrder {
                         // . . .
                         // . . .
                         return;
-                    }
-                    else{
-                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),nowOrder.getQuantity(),nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
+                    } else {
+                        Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(), nowOrder.getPeriod(), nowOrder.getBroker(), nowOrder.getPrice(), nowOrder.getQuantity(), nowOrder.getTrader(), nowOrder.getTradeCompany(), nowOrder.getSide(), order.getTrader(), order.getTradeCompany(), order.getSide());
                         blotterService.saveBlotter(blotter);
-                        dealPrice+=nowOrder.getPrice()*nowOrder.getQuantity();
-                        quantity-=nowOrder.getQuantity();
+                        dealPrice += nowOrder.getPrice() * nowOrder.getQuantity();
+                        quantity -= nowOrder.getQuantity();
                         orderService.deleteOrder(nowOrder);
-                        traderOrderService.finishOrder(nowOrder.getTrader(),nowOrder.getOrderTime());
-                        if(quantity==0) {
+                        traderOrderService.finishOrder(nowOrder.getTrader(), nowOrder.getOrderTime());
+                        if (quantity == 0) {
                             traderOrder.setStatus(1);
                             traderOrder.setRestQuantity(0);
                             traderOrder.setDealPrice(dealPrice);
@@ -292,7 +286,7 @@ public class ExecOrder {
         }
     }
 
-    public void execLimitOrder(JSONObject obj){
+    public void execLimitOrder(JSONObject obj) {
 
         Order order = convertToModel.convertToLimitOrder(obj);
 
@@ -308,9 +302,9 @@ public class ExecOrder {
         traderOrder.setPrice(order.getPrice());
         traderOrder.setStatus(1);
 
-        List<Order> list = orderService.getDepth(order.getProduct(),order.getPeriod(),order.getBroker());
+        List<Order> list = orderService.getDepth(order.getProduct(), order.getPeriod(), order.getBroker());
 
-        if(list.size()==0){
+        if (list.size() == 0) {
             orderService.saveLimitOrder(order);
             traderOrderService.saveTraderOrder(traderOrder);
             return;
@@ -318,56 +312,54 @@ public class ExecOrder {
 
         List<List<Order>> sepList = intOrder.getIntOrder(list);
 
-        int i =0;
-        for(;i<sepList.size();i++){
-            if(sepList.get(i).get(0).getSide()==1)
+        int i = 0;
+        for (; i < sepList.size(); i++) {
+            if (sepList.get(i).get(0).getSide() == 1)
                 break;
         }
-        if(order.getSide() == 0){
-            for(int a = i;a<sepList.size();a++){
-                if(sepList.get(a).get(0).getPrice()>=order.getPrice()){
-                    int b=0;
-                    while(order.getQuantity()>0 && b<sepList.get(a).size()){
+        if (order.getSide() == 0) {
+            for (int a = i; a < sepList.size(); a++) {
+                if (sepList.get(a).get(0).getPrice() >= order.getPrice()) {
+                    int b = 0;
+                    while (order.getQuantity() > 0 && b < sepList.get(a).size()) {
                         Order nowOrder = sepList.get(a).get(b);
                         int num = nowOrder.getQuantity();
-                        if(num > order.getQuantity()) {
+                        if (num > order.getQuantity()) {
                             nowOrder.setQuantity(num - order.getQuantity());
                             Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(), nowOrder.getPeriod(), nowOrder.getBroker(), nowOrder.getPrice(), order.getQuantity(), nowOrder.getTrader(), nowOrder.getTradeCompany(), nowOrder.getSide(), order.getTrader(), order.getTradeCompany(), order.getSide());
                             blotterService.saveBlotter(blotter);
-                            traderOrderService.updateRestQuantity(nowOrder.getTrader(),nowOrder.getOrderTime(),num-order.getQuantity());
+                            traderOrderService.updateRestQuantity(nowOrder.getTrader(), nowOrder.getOrderTime(), num - order.getQuantity());
                             orderService.updateOrder(nowOrder);
 
                             order.setQuantity(0);
                             traderOrder.setStatus(0);
                             traderOrder.setRestQuantity(0);
-                            traderOrder.setDealPrice((traderOrder.getQuantity()-traderOrder.getRestQuantity())*traderOrder.getPrice());
+                            traderOrder.setDealPrice((traderOrder.getQuantity() - traderOrder.getRestQuantity()) * traderOrder.getPrice());
                             traderOrderService.saveTraderOrder(traderOrder);
                             return;
-                        }
-                        else{
-                            int nowQuantity = order.getQuantity()-num;
-                            Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),num,nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
+                        } else {
+                            int nowQuantity = order.getQuantity() - num;
+                            Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(), nowOrder.getPeriod(), nowOrder.getBroker(), nowOrder.getPrice(), num, nowOrder.getTrader(), nowOrder.getTradeCompany(), nowOrder.getSide(), order.getTrader(), order.getTradeCompany(), order.getSide());
                             blotterService.saveBlotter(blotter);
                             order.setQuantity(nowQuantity);
                             orderService.deleteOrder(nowOrder);
-                            traderOrderService.finishOrder(nowOrder.getTrader(),nowOrder.getOrderTime());
+                            traderOrderService.finishOrder(nowOrder.getTrader(), nowOrder.getOrderTime());
 
-                            traderOrder.setRestQuantity(traderOrder.getRestQuantity()-nowOrder.getQuantity());
-                            if(nowQuantity==0){
+                            traderOrder.setRestQuantity(traderOrder.getRestQuantity() - nowOrder.getQuantity());
+                            if (nowQuantity == 0) {
                                 traderOrder.setStatus(0);
-                                traderOrder.setDealPrice((traderOrder.getQuantity()-traderOrder.getRestQuantity())*traderOrder.getPrice());
+                                traderOrder.setDealPrice((traderOrder.getQuantity() - traderOrder.getRestQuantity()) * traderOrder.getPrice());
                                 traderOrderService.saveTraderOrder(traderOrder);
-                                return ;
+                                return;
                             }
                         }
                         b++;
                     }
-                }
-                else{
+                } else {
                     traderOrder.setStatus(1);
                     traderOrderService.saveTraderOrder(traderOrder);
                     orderService.saveLimitOrder(order);
-                    traderOrder.setDealPrice((traderOrder.getQuantity()-traderOrder.getRestQuantity())*traderOrder.getPrice());
+                    traderOrder.setDealPrice((traderOrder.getQuantity() - traderOrder.getRestQuantity()) * traderOrder.getPrice());
                     return;
                 }
             }
@@ -375,52 +367,49 @@ public class ExecOrder {
             traderOrder.setRestQuantity(order.getQuantity());
             traderOrderService.saveTraderOrder(traderOrder);
             orderService.saveLimitOrder(order);
-        }
-        else if(order.getSide() == 1){
-            for(int a =i-1;a>=0;a--){
-                if(sepList.get(a).get(0).getPrice()<=order.getPrice()){
+        } else if (order.getSide() == 1) {
+            for (int a = i - 1; a >= 0; a--) {
+                if (sepList.get(a).get(0).getPrice() <= order.getPrice()) {
                     int b = 0;
-                    while(order.getQuantity()>0 && b<sepList.get(a).size()){
+                    while (order.getQuantity() > 0 && b < sepList.get(a).size()) {
                         Order nowOrder = sepList.get(a).get(b);
                         int num = nowOrder.getQuantity();
-                        if(num > order.getQuantity()){
+                        if (num > order.getQuantity()) {
                             nowOrder.setQuantity(num - order.getQuantity());
                             Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(), nowOrder.getPeriod(), nowOrder.getBroker(), nowOrder.getPrice(), order.getQuantity(), nowOrder.getTrader(), nowOrder.getTradeCompany(), nowOrder.getSide(), order.getTrader(), order.getTradeCompany(), order.getSide());
                             blotterService.saveBlotter(blotter);
-                            traderOrderService.updateRestQuantity(nowOrder.getTrader(),nowOrder.getOrderTime(),num-order.getQuantity());
+                            traderOrderService.updateRestQuantity(nowOrder.getTrader(), nowOrder.getOrderTime(), num - order.getQuantity());
                             orderService.updateOrder(nowOrder);
 
                             order.setQuantity(0);
                             traderOrder.setStatus(0);
                             traderOrder.setRestQuantity(0);
-                            traderOrder.setDealPrice((traderOrder.getQuantity()-traderOrder.getRestQuantity())*traderOrder.getPrice());
+                            traderOrder.setDealPrice((traderOrder.getQuantity() - traderOrder.getRestQuantity()) * traderOrder.getPrice());
                             traderOrderService.saveTraderOrder(traderOrder);
                             return;
-                        }
-                        else{
-                            int nowQuantity = order.getQuantity()-num;
-                            Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(),nowOrder.getPeriod(),nowOrder.getBroker(),nowOrder.getPrice(),num,nowOrder.getTrader(),nowOrder.getTradeCompany(),nowOrder.getSide(),order.getTrader(),order.getTradeCompany(),order.getSide());
+                        } else {
+                            int nowQuantity = order.getQuantity() - num;
+                            Blotter blotter = convertBlotter.getBlotter(nowOrder.getProduct(), nowOrder.getPeriod(), nowOrder.getBroker(), nowOrder.getPrice(), num, nowOrder.getTrader(), nowOrder.getTradeCompany(), nowOrder.getSide(), order.getTrader(), order.getTradeCompany(), order.getSide());
                             blotterService.saveBlotter(blotter);
                             order.setQuantity(nowQuantity);
                             orderService.deleteOrder(nowOrder);
-                            traderOrderService.finishOrder(nowOrder.getTrader(),nowOrder.getOrderTime());
+                            traderOrderService.finishOrder(nowOrder.getTrader(), nowOrder.getOrderTime());
 
-                            traderOrder.setRestQuantity(traderOrder.getRestQuantity()-nowOrder.getQuantity());
-                            if(nowQuantity==0){
+                            traderOrder.setRestQuantity(traderOrder.getRestQuantity() - nowOrder.getQuantity());
+                            if (nowQuantity == 0) {
                                 traderOrder.setStatus(0);
-                                traderOrder.setDealPrice((traderOrder.getQuantity()-traderOrder.getRestQuantity())*traderOrder.getPrice());
+                                traderOrder.setDealPrice((traderOrder.getQuantity() - traderOrder.getRestQuantity()) * traderOrder.getPrice());
                                 traderOrderService.saveTraderOrder(traderOrder);
-                                return ;
+                                return;
                             }
                         }
                         b++;
                     }
-                }
-                else{
+                } else {
                     traderOrder.setStatus(1);
                     traderOrderService.saveTraderOrder(traderOrder);
                     orderService.saveLimitOrder(order);
-                    traderOrder.setDealPrice((traderOrder.getQuantity()-traderOrder.getRestQuantity())*traderOrder.getPrice());
+                    traderOrder.setDealPrice((traderOrder.getQuantity() - traderOrder.getRestQuantity()) * traderOrder.getPrice());
                     return;
                 }
             }

@@ -34,19 +34,19 @@ public class UserController {
 
     private JsonToProtocol jsonToProtocol = new JsonToProtocol();
 
-    @RequestMapping(value = "/user/create",method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> Register(@RequestBody JSONObject obj){
+    @RequestMapping(value = "/user/create", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> Register(@RequestBody JSONObject obj) {
         JSONObject newObj = traderService.createUser(obj);
-        return new ResponseEntity<JSONObject>(newObj,HttpStatus.OK);
+        return new ResponseEntity<JSONObject>(newObj, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/user/login",method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> Login(@RequestBody JSONObject obj){
+    @RequestMapping(value = "/user/login", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> Login(@RequestBody JSONObject obj) {
         JSONObject newObj = traderService.getUserByUsernameAndPwd(obj);
-        if(newObj == null){
+        if (newObj == null) {
             return new ResponseEntity<JSONObject>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<JSONObject>(newObj,HttpStatus.OK);
+        return new ResponseEntity<JSONObject>(newObj, HttpStatus.OK);
     }
 
 }

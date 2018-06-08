@@ -15,22 +15,23 @@ public class TraderOrderService {
     @Autowired
     TraderOrderRepository traderOrderRepository;
 
-    public List<TraderOrder> getByUsername(String trader){
+    public List<TraderOrder> getByUsername(String trader) {
         return traderOrderRepository.getByUsername(trader);
     }
 
-    public List<TraderOrder> getFinishedByUsername(String trader){
+    public List<TraderOrder> getFinishedByUsername(String trader) {
         return traderOrderRepository.getFinishedByUsername(trader);
     }
 
-    public List<TraderOrder> getUnfinishedByUsername(String trader){
+    public List<TraderOrder> getUnfinishedByUsername(String trader) {
         return traderOrderRepository.getUnfinishedByUsername(trader);
     }
 
-    public List<TraderOrder> getStoppedByUsername(String trader){
+    public List<TraderOrder> getStoppedByUsername(String trader) {
         return traderOrderRepository.getStoppedByUsername(trader);
     }
-    public List<TraderOrder> getCancelledByUsername(String trader){
+
+    public List<TraderOrder> getCancelledByUsername(String trader) {
         return traderOrderRepository.getCancelledByUsername(trader);
     }
 }

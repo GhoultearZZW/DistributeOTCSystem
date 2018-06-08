@@ -15,11 +15,11 @@ public class BlotterService {
     @Autowired
     BlotterRepository blotterRepository;
 
-    public void saveBlotter(Blotter blotter){
+    public void saveBlotter(Blotter blotter) {
         blotterRepository.saveAndFlush(blotter);
     }
 
-    public List<Blotter> getBlotters(String product,String period,String broker){
-        return blotterRepository.getBlotter(product,period,broker);
+    public List<Blotter> getBlotters(String product, String period, String broker) {
+        return blotterRepository.getBlotter(product, period, broker);
     }
 }

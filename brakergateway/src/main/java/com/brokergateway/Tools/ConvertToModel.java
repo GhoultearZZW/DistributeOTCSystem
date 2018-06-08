@@ -13,7 +13,7 @@ import java.util.Date;
  */
 public class ConvertToModel {
 
-    public TraderOrder convertToInitOrder(Order order){
+    public TraderOrder convertToInitOrder(Order order) {
         TraderOrder traderOrder = new TraderOrder();
 
         traderOrder.setTradeCompany(order.getTradeCompany());
@@ -31,48 +31,48 @@ public class ConvertToModel {
         return traderOrder;
     }
 
-    public int converToCancelOrder(JSONObject obj){
+    public int converToCancelOrder(JSONObject obj) {
         return obj.getInt("orderId");
     }
 
-    public Order convertToStopOrder(JSONObject obj){
+    public Order convertToStopOrder(JSONObject obj) {
         Order order = new Order();
 
-        order.setProduct((String)obj.get("product"));
-        order.setBroker((String)obj.get("broker"));
-        order.setOrderType((String)obj.get("orderType"));
-        order.setPeriod((String)obj.get("period"));
+        order.setProduct((String) obj.get("product"));
+        order.setBroker((String) obj.get("broker"));
+        order.setOrderType((String) obj.get("orderType"));
+        order.setPeriod((String) obj.get("period"));
         order.setQuantity(obj.getInt("quantity"));
         order.setPrice(obj.getDouble("price"));
         order.setSide(obj.getInt("side"));
-        order.setTrader((String)obj.get("trader"));
+        order.setTrader((String) obj.get("trader"));
         order.setStatus(1);
 
-        if(obj.containsKey("orderId")){
+        if (obj.containsKey("orderId")) {
             order.setOrderId(obj.getInt("orderId"));
         }
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
-        Date  date = new Date();
+        Date date = new Date();
         order.setOrderTime(df.format(date));
 
         return order;
     }
 
-    public Order convertToLimitOrder(JSONObject obj){
+    public Order convertToLimitOrder(JSONObject obj) {
         Order order = new Order();
 
-        order.setProduct((String)obj.get("product"));
-        order.setBroker((String)obj.get("broker"));
-        order.setOrderType((String)obj.get("orderType"));
-        order.setPeriod((String)obj.get("period"));
+        order.setProduct((String) obj.get("product"));
+        order.setBroker((String) obj.get("broker"));
+        order.setOrderType((String) obj.get("orderType"));
+        order.setPeriod((String) obj.get("period"));
         order.setQuantity(obj.getInt("quantity"));
         order.setPrice(obj.getDouble("price"));
         order.setSide(obj.getInt("side"));
-        order.setTrader((String)obj.get("trader"));
-        order.setTradeCompany((String)obj.get("tradeCompany"));
+        order.setTrader((String) obj.get("trader"));
+        order.setTradeCompany((String) obj.get("tradeCompany"));
         order.setStatus(1);
 
-        if(obj.containsKey("orderId")){
+        if (obj.containsKey("orderId")) {
             order.setOrderId(obj.getInt("orderId"));
         }
 
@@ -83,19 +83,19 @@ public class ConvertToModel {
         return order;
     }
 
-    public Order convertToMarketOrder(JSONObject obj){
+    public Order convertToMarketOrder(JSONObject obj) {
         Order order = new Order();
 
-        order.setProduct((String)obj.get("product"));
-        order.setBroker((String)obj.get("broker"));
-        order.setOrderType((String)obj.get("orderType"));
-        order.setPeriod((String)obj.get("period"));
+        order.setProduct((String) obj.get("product"));
+        order.setBroker((String) obj.get("broker"));
+        order.setOrderType((String) obj.get("orderType"));
+        order.setPeriod((String) obj.get("period"));
         order.setQuantity(obj.getInt("quantity"));
         order.setSide(obj.getInt("side"));
-        order.setTrader((String)obj.get("trader"));
-        order.setTradeCompany((String)obj.get("tradeCompany"));
+        order.setTrader((String) obj.get("trader"));
+        order.setTradeCompany((String) obj.get("tradeCompany"));
         order.setStatus(1);
-        if(obj.containsKey("orderId")){
+        if (obj.containsKey("orderId")) {
             order.setOrderId(obj.getInt("orderId"));
         }
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");

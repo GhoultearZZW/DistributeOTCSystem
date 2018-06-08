@@ -14,11 +14,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 public class TraderApplicationTests {
 
-	@Autowired
-	ProducerService producerService;
+    @Autowired
+    ProducerService producerService;
 
-	@Test
-	public void contextLoads()throws InterruptedException {
-	}
+    @Test
+    public void contextLoads() throws InterruptedException {
+    }
 
 }

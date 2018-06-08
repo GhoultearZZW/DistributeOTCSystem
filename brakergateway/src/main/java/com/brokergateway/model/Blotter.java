@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by homepppp on 2018/5/22.
  */
 @Entity
-@Table(name="blotter",catalog = "")
+@Table(name = "blotter", catalog = "")
 public class Blotter {
     private int tradeId;
     private String broker;
@@ -24,7 +24,7 @@ public class Blotter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tradeId",nullable = false)
+    @Column(name = "tradeId", nullable = false)
     public int getTradeId() {
         return tradeId;
     }
@@ -34,7 +34,7 @@ public class Blotter {
     }
 
     @Basic
-    @Column(name = "broker",nullable = false)
+    @Column(name = "broker", nullable = false)
     public String getBroker() {
         return broker;
     }
@@ -44,7 +44,7 @@ public class Blotter {
     }
 
     @Basic
-    @Column(name = "product",nullable = false)
+    @Column(name = "product", nullable = false)
     public String getProduct() {
         return product;
     }
@@ -54,7 +54,7 @@ public class Blotter {
     }
 
     @Basic
-    @Column(name = "period",nullable = false)
+    @Column(name = "period", nullable = false)
     public String getPeriod() {
         return period;
     }
@@ -64,7 +64,7 @@ public class Blotter {
     }
 
     @Basic
-    @Column(name = "price",nullable = false)
+    @Column(name = "price", nullable = false)
     public double getPrice() {
         return price;
     }
@@ -74,7 +74,7 @@ public class Blotter {
     }
 
     @Basic
-    @Column(name = "quantity",nullable = false,length = 31)
+    @Column(name = "quantity", nullable = false, length = 31)
     public int getQuantity() {
         return quantity;
     }
@@ -84,7 +84,7 @@ public class Blotter {
     }
 
     @Basic
-    @Column(name = "initiatorTrader",nullable = true)
+    @Column(name = "initiatorTrader", nullable = true)
     public String getInitiatorTrader() {
         return initiatorTrader;
     }
@@ -94,7 +94,7 @@ public class Blotter {
     }
 
     @Basic
-    @Column(name = "initiatorCompany",nullable = true)
+    @Column(name = "initiatorCompany", nullable = true)
     public String getInitiatorCompany() {
         return initiatorCompany;
     }
@@ -104,7 +104,7 @@ public class Blotter {
     }
 
     @Basic
-    @Column(name = "initiatorSide",nullable = true)
+    @Column(name = "initiatorSide", nullable = true)
     public int getInitiatorSide() {
         return initiatorSide;
     }
@@ -114,7 +114,7 @@ public class Blotter {
     }
 
     @Basic
-    @Column(name = "completionCompany",nullable = true)
+    @Column(name = "completionCompany", nullable = true)
     public String getCompletionCompany() {
         return completionCompany;
     }

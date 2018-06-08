@@ -12,20 +12,20 @@ import java.util.List;
  * Created by homepppp on 2018/5/24.
  */
 @Repository
-public interface BlotterRepository extends JpaRepository<Blotter,Integer> {
-    @Query(value = "select * from blotter where product =:product and period =:period order by deal_time asc",nativeQuery = true)
+public interface BlotterRepository extends JpaRepository<Blotter, Integer> {
+    @Query(value = "select * from blotter where product =:product and period =:period order by deal_time asc", nativeQuery = true)
     List<Blotter> getBlotter(@Param("product") String product, @Param("period") String period);
 
     @Query(value = "select * from blotter where (initiator_company =:company or completion_company =:company) and broker =:broker order by deal_time asc"
-            ,nativeQuery = true)
-    List<Blotter> getBlotterByCompany(@Param("company")String company,@Param("broker")String broker);
+            , nativeQuery = true)
+    List<Blotter> getBlotterByCompany(@Param("company") String company, @Param("broker") String broker);
 
-    @Query(value = "select * from blotter where initiator_company =:company and broker =:broker order by deal_time asc",nativeQuery = true)
-    List<Blotter> getBlotterByCompanyAsInitiator(@Param("company")String company,@Param("broker")String broker);
+    @Query(value = "select * from blotter where initiator_company =:company and broker =:broker order by deal_time asc", nativeQuery = true)
+    List<Blotter> getBlotterByCompanyAsInitiator(@Param("company") String company, @Param("broker") String broker);
 
-    @Query(value = "select * from blotter where completion_company =:company and broker=:broker order by deal_time asc",nativeQuery = true)
-    List<Blotter> getBlotterByCompanyAsCompletion(@Param("company")String company,@Param("broker")String broker);
+    @Query(value = "select * from blotter where completion_company =:company and broker=:broker order by deal_time asc", nativeQuery = true)
+    List<Blotter> getBlotterByCompanyAsCompletion(@Param("company") String company, @Param("broker") String broker);
 
-    @Query(value = "select * from blotter where broker =:broker order by deal_time asc",nativeQuery = true)
-    List<Blotter> getAllBlotter(@Param("broker")String broker);
+    @Query(value = "select * from blotter where broker =:broker order by deal_time asc", nativeQuery = true)
+    List<Blotter> getAllBlotter(@Param("broker") String broker);
 }

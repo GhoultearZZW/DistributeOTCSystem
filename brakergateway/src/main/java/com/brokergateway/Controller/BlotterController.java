@@ -21,34 +21,34 @@ public class BlotterController {
     @Autowired
     BlotterService blotterService;
 
-    @RequestMapping(value = "/blotter/all",method = RequestMethod.POST)
-    public ResponseEntity<List<Blotter>> getAllBlotter(@RequestBody JSONObject obj){
+    @RequestMapping(value = "/blotter/all", method = RequestMethod.POST)
+    public ResponseEntity<List<Blotter>> getAllBlotter(@RequestBody JSONObject obj) {
         String broker = (String) obj.get("broker");
         List<Blotter> list = blotterService.getAllBlotter(broker);
-        return new ResponseEntity<>(list,HttpStatus.OK);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/blotter",method = RequestMethod.POST)
-    public ResponseEntity<List<Blotter>> getRecentBlotter(@RequestBody JSONObject obj){
-        String company = (String)obj.get("company");
-        String broker = (String)obj.get("broker");
-        List<Blotter> list = blotterService.getBlottersByCompany(company,broker);
-        return new ResponseEntity<List<Blotter>>(list,HttpStatus.OK);
+    @RequestMapping(value = "/blotter", method = RequestMethod.POST)
+    public ResponseEntity<List<Blotter>> getRecentBlotter(@RequestBody JSONObject obj) {
+        String company = (String) obj.get("company");
+        String broker = (String) obj.get("broker");
+        List<Blotter> list = blotterService.getBlottersByCompany(company, broker);
+        return new ResponseEntity<List<Blotter>>(list, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/blotter/initiator",method = RequestMethod.POST)
-    public ResponseEntity<List<Blotter>> getBlotterAsInitiator(@RequestBody JSONObject obj){
-        String company = (String)obj.get("company");
-        String broker =(String)obj.get("broker");
-        List<Blotter> list = blotterService.getBlotterByCompanyAsInitiator(company,broker);
-        return new ResponseEntity<List<Blotter>>(list,HttpStatus.OK);
+    @RequestMapping(value = "/blotter/initiator", method = RequestMethod.POST)
+    public ResponseEntity<List<Blotter>> getBlotterAsInitiator(@RequestBody JSONObject obj) {
+        String company = (String) obj.get("company");
+        String broker = (String) obj.get("broker");
+        List<Blotter> list = blotterService.getBlotterByCompanyAsInitiator(company, broker);
+        return new ResponseEntity<List<Blotter>>(list, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/blotter/completion",method = RequestMethod.POST)
-    public ResponseEntity<List<Blotter>> getBlotterAsCompletion(@RequestBody JSONObject obj){
-        String company = (String)obj.get("company");
-        String broker = (String)obj.get("broker");
-        List<Blotter> list = blotterService.getBlotterByCompanyAsCompletion(company,broker);
-        return new ResponseEntity<List<Blotter>>(list,HttpStatus.OK);
+    @RequestMapping(value = "/blotter/completion", method = RequestMethod.POST)
+    public ResponseEntity<List<Blotter>> getBlotterAsCompletion(@RequestBody JSONObject obj) {
+        String company = (String) obj.get("company");
+        String broker = (String) obj.get("broker");
+        List<Blotter> list = blotterService.getBlotterByCompanyAsCompletion(company, broker);
+        return new ResponseEntity<List<Blotter>>(list, HttpStatus.OK);
     }
 }

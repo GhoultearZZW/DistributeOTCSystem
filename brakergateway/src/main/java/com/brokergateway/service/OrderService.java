@@ -20,32 +20,32 @@ public class OrderService {
 
     private static Logger logger = Logger.getLogger(OrderService.class);
 
-    public void saveLimitOrder(Order order){
-        if(order.getQuantity()>0)
+    public void saveLimitOrder(Order order) {
+        if (order.getQuantity() > 0)
             orderRepository.saveAndFlush(order);
     }
 
-    public List<Order> getDepth(String product, String period,String broker){
-        return orderRepository.getDepth(product,period,broker);
+    public List<Order> getDepth(String product, String period, String broker) {
+        return orderRepository.getDepth(product, period, broker);
     }
 
-    public void deleteOrder(Order order){
+    public void deleteOrder(Order order) {
         orderRepository.deleteOrder(order.getOrderId());
     }
 
-    public void updateOrder(Order order){
-        orderRepository.updateOrderQuantity(order.getQuantity(),order.getOrderId());
+    public void updateOrder(Order order) {
+        orderRepository.updateOrderQuantity(order.getQuantity(), order.getOrderId());
     }
 
-    public void cancelOrder(String trader,String time){
+    public void cancelOrder(String trader, String time) {
 
     }
 
-    public List<Map<String,Object>> getAllProducts(){
+    public List<Map<String, Object>> getAllProducts() {
         return orderRepository.getAllProducts();
     }
 
-    public List<Map<String,Object>> getDepthSum(String product,String period,String broker){
-        return orderRepository.getOrderedDepth(product,period,broker);
+    public List<Map<String, Object>> getDepthSum(String product, String period, String broker) {
+        return orderRepository.getOrderedDepth(product, period, broker);
     }
 }
