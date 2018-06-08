@@ -1,10 +1,7 @@
 package com.tradergateway.controller;
 
 import com.tradergateway.Async.AsyncConfig;
-import com.tradergateway.Tools.ConvertBlotter;
-import com.tradergateway.Tools.ConvertToModel;
-import com.tradergateway.Tools.GetEndTime;
-import com.tradergateway.Tools.IntOrder;
+import com.tradergateway.Tools.*;
 import com.tradergateway.model.Blotter;
 import com.tradergateway.model.Order;
 import com.tradergateway.service.BlotterService;
@@ -48,6 +45,7 @@ public class OrderController {
     private ConvertToModel convertToModel = new ConvertToModel();
     private IntOrder intOrder = new IntOrder();
     private ConvertBlotter convertBlotter = new ConvertBlotter();
+    private JsonToProtocol jsonToProtocol = new JsonToProtocol();
 
     private static Logger logger = Logger.getLogger(OrderController.class);
 
@@ -100,17 +98,17 @@ public class OrderController {
     @RequestMapping(value = "depth/order",method = RequestMethod.POST)
     public ResponseEntity<Void> sendOrder(@RequestBody JSONObject obj){
         Destination destination = null;
-        destination = new ActiveMQQueue("mytest.queue");
+        destination = new ActiveMQQueue("order.queue");
         if(obj.containsKey("method") &&((String)obj.get("method")).equals("TWAP")){
             ExecutorService service = Executors.newFixedThreadPool(10);
             TWAP tWapTask = new TWAP(obj,destination);
             service.execute(tWapTask);
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        producerService.sendMessage(destination,obj);
+        String str = jsonToProtocol.convertToString(obj);
+        producerService.send(destination,str);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
-
 
     //class for TWAP
     class TWAP implements Runnable{
@@ -131,9 +129,10 @@ public class OrderController {
             long times = 1+(date2.getTime()-date1.getTime())/interval;
             long oneTimeQuantity = quantity/times;
             obj.put("quantity",oneTimeQuantity);
+            String str = jsonToProtocol.convertToString(obj);
             for(int i =0;i<times;i++) {
                 try {
-                    producerService.sendMessage(destination, obj);
+                    producerService.send(destination, str);
                     Thread.sleep(interval);
                 }catch (Exception e){
                     e.printStackTrace();
