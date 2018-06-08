@@ -38,7 +38,7 @@ public class OrderService {
     }
 
     public void cancelOrder(String trader, String time) {
-
+        orderRepository.cancelOrder(trader,time);
     }
 
     public List<Map<String, Object>> getAllProducts() {

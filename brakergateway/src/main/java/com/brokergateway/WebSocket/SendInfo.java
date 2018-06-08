@@ -50,6 +50,7 @@ public class SendInfo {
             ArrayList<String> product = products.get(i);
             List<Map<String, Object>> map = orderService.getDepthSum(product.get(1), product.get(0), product.get(2));
             List<Map<String, Object>> oldMap = depthList.get(product);
+            ArrayList<Double> changedPrice = new ArrayList<>();
             for (int j = 0; j < map.size(); j++) {
                 if (oldMap == null || !oldMap.contains(map.get(j))) {
                     JSONObject obj = new JSONObject();
@@ -60,11 +61,15 @@ public class SendInfo {
                     obj.put("price", map.get(j).get("1"));
                     obj.put("quantity", map.get(j).get("2"));
                     arr.add(obj);
+                    changedPrice.add((Double)map.get(j).get("1"));
                 }
             }
             if(oldMap!=null) {
                 for (int j = 0; j < oldMap.size(); j++) {
                     if (map == null || !map.contains(oldMap.get(j))) {
+                        if(changedPrice.contains((Double)oldMap.get(j).get("1"))){
+                            break;
+                        }
                         JSONObject obj = new JSONObject();
                         obj.put("product", product.get(1));
                         obj.put("period", product.get(0));

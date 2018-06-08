@@ -104,7 +104,13 @@ public class OrderController {
             service.execute(tWapTask);
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        String str = jsonToProtocol.convertToString(obj);
+        String str;
+        if(obj.get("orderType").equals("CancelOrder")){
+           str = "CancelOrder-"+obj.getInt("orderId")+"-";
+        }
+        else {
+            str = jsonToProtocol.convertToString(obj);
+        }
         producerService.send(destination, str);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
