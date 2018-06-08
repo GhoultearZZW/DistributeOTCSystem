@@ -62,13 +62,26 @@ public class SendInfo {
                     arr.add(obj);
                 }
             }
+            if(oldMap!=null) {
+                for (int j = 0; j < oldMap.size(); j++) {
+                    if (map == null || !map.contains(oldMap.get(j))) {
+                        JSONObject obj = new JSONObject();
+                        obj.put("product", product.get(1));
+                        obj.put("period", product.get(0));
+                        obj.put("broker", product.get(2));
+                        obj.put("price", oldMap.get(j).get("1"));
+                        obj.put("status", 0);
+                        arr.add(obj);
+                    }
+                }
+            }
             depthList.remove(product);
             depthList.put(product, map);
         }
         if(arr.size()!=0)
             webSocket1.sendMessage(arr);
 
-        Thread.sleep(3000);
+        //Thread.sleep(3000);
     }
 
 }
