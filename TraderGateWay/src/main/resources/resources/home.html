@@ -59,46 +59,91 @@
             <img class="img-circle" src="/image/gold.jpg" width="180" height="180">
             <h2>Gold</h2>
 
-            <div class="input-group">
-                <select class="form-control" id="goldPeriod" style="z-index:0;">
-                    <option>SEP16</option>
-                    <option>SEP17</option>
-                </select>
-                <span class="input-group-btn"><button class="btn btn-default" id="goldDepth">Market depth &raquo;</button></span>
-            </div>
-        </div><!-- /.col-lg-4 -->
+            <form class="form-inline" role="form">
+                <div class="form-group" style="max-width:500px;">
+                    <select class="form-control" id="goldPeriod" style="z-index:0;">
+                        <option value='' disabled selected style='display:none;'>period</option>
+                        <option>SEP16</option>
+                        <option>SEP17</option>
+                    </select>
+                    <select class="form-control" id="goldBroker" style="z-index:0;">
+                        <option value='' disabled selected style='display:none;'>broker</option>
+                        <option>M</option>
+                        <option>N</option>
+                    </select>
+
+                    <!--debug大坑，form-inline里面的button元素点击后是无法跳到其他页面的，而是刷新当前页面
+                        无论在html还是js中设置跳转都没用，于是这里改用a元素-->
+                    <a class="btn btn-default" id="goldDepth">Depth &raquo;</a>
+                </div>
+            </form>
+
+        </div>
         <div class="col-lg-3">
             <img class="img-circle" src="/image/silver.jpg" alt="Generic placeholder image" width="180" height="180">
             <h2>Silver</h2>
-            <div class="input-group">
-                <select class="form-control" id="silverPeriod" style="z-index:0;">
-                    <option>SEP16</option>
-                    <option>SEP17</option>
-                </select>
-                <span class="input-group-btn"><button class="btn btn-default" id="silverDepth">Market depth &raquo;</button></span>
-            </div>
+            <form class="form-inline" role="form">
+                <div class="form-group" style="max-width:500px;">
+                    <select class="form-control" id="silverPeriod" style="z-index:0;">
+                        <option value='' disabled selected style='display:none;'>period</option>
+                        <option>SEP16</option>
+                        <option>SEP17</option>
+                    </select>
+                    <select class="form-control" id="silverBroker" style="z-index:0;">
+                        <option value='' disabled selected style='display:none;'>broker</option>
+                        <option>M</option>
+                        <option>N</option>
+                    </select>
+
+                    <!--debug大坑，form-inline里面的button元素点击后是无法跳到其他页面的，而是刷新当前页面
+                        无论在html还是js中设置跳转都没用，于是这里改用a元素-->
+                    <a class="btn btn-default" id="silverDepth">Depth &raquo;</a>
+                </div>
+            </form>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-3">
             <img class="img-circle" src="/image/oil.jpg" alt="Generic placeholder image" width="180" height="180">
             <h2>Oil</h2>
-            <div class="input-group">
-                <select class="form-control" id="oilPeriod" style="z-index:0;">
-                    <option>SEP16</option>
-                    <option>SEP17</option>
-                </select>
-                <span class="input-group-btn"><button class="btn btn-default" id="oilDepth">Market depth &raquo;</button></span>
-            </div>
+            <form class="form-inline" role="form">
+                <div class="form-group" style="max-width:500px;">
+                    <select class="form-control" id="oilPeriod" style="z-index:0;">
+                        <option value='' disabled selected style='display:none;'>period</option>
+                        <option>SEP16</option>
+                        <option>SEP17</option>
+                    </select>
+                    <select class="form-control" id="oilBroker" style="z-index:0;">
+                        <option value='' disabled selected style='display:none;'>broker</option>
+                        <option>M</option>
+                        <option>N</option>
+                    </select>
+
+                    <!--debug大坑，form-inline里面的button元素点击后是无法跳到其他页面的，而是刷新当前页面
+                        无论在html还是js中设置跳转都没用，于是这里改用a元素-->
+                    <a class="btn btn-default" id="oilDepth">Depth &raquo;</a>
+                </div>
+            </form>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-3">
             <img class="img-circle" src="/image/soybean.jpg" width="180" height="180">
             <h2>Soybean</h2>
-            <div class="input-group">
-                <select class="form-control" id="soybeanPeriod" style="z-index:0;">
-                    <option>SEP16</option>
-                    <option>SEP17</option>
-                </select>
-                <span class="input-group-btn"><button class="btn btn-default" id="soybeanDepth">Market depth &raquo;</button></span>
-            </div>
+            <form class="form-inline" role="form">
+                <div class="form-group" style="max-width:500px;">
+                    <select class="form-control" id="soybeanPeriod" style="z-index:0;">
+                        <option value='' disabled selected style='display:none;'>period</option>
+                        <option>SEP16</option>
+                        <option>SEP17</option>
+                    </select>
+                    <select class="form-control" id="soybeanBroker" style="z-index:0;">
+                        <option value='' disabled selected style='display:none;'>broker</option>
+                        <option>M</option>
+                        <option>N</option>
+                    </select>
+
+                    <!--debug大坑，form-inline里面的button元素点击后是无法跳到其他页面的，而是刷新当前页面
+                        无论在html还是js中设置跳转都没用，于是这里改用a元素-->
+                    <a class="btn btn-default" id="soybeanDepth">Depth &raquo;</a>
+                </div>
+            </form>
         </div>
     </div><!-- /.row -->
 
@@ -120,6 +165,7 @@
                 <span class="input-group-addon">Broker</span>
                 <select class="form-control" id="inputBrokerForLimit">
                     <option>M</option>
+                    <option>N</option>
                 </select>
             </div>
 
@@ -165,6 +211,12 @@
                 </select>
             </div>
 
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="inputTWAPForLimit" value="TWAP">TWAP
+                </label>
+            </div>
+
             <button class="btn btn-lg btn-primary btn-block" type="button" id="submitLimit">Submit order</button>
         </form>
 
@@ -190,6 +242,7 @@
                 <span class="input-group-addon">Broker</span>
                 <select class="form-control" id="inputBrokerForMarket">
                     <option>M</option>
+                    <option>N</option>
                 </select>
             </div>
 
@@ -229,6 +282,12 @@
                 </select>
             </div>
 
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="inputTWAPForMarket" value="TWAP">TWAP
+                </label>
+            </div>
+
             <button class="btn btn-lg btn-primary btn-block" type="button" id="submitMarket">Submit order</button>
         </form>
 
@@ -253,6 +312,7 @@
                 <span class="input-group-addon">Broker</span>
                 <select class="form-control" id="inputBrokerForStop">
                     <option>M</option>
+                    <option>N</option>
                 </select>
             </div>
 
@@ -296,6 +356,12 @@
                     <option>Sell-side</option>
                     <option>Buy-side</option>
                 </select>
+            </div>
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="inputTWAPForStop" value="TWAP">TWAP
+                </label>
             </div>
 
             <button class="btn btn-lg btn-primary btn-block" type="button" id="submitStop">Submit order</button>

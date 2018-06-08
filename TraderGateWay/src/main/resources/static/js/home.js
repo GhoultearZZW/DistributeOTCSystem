@@ -78,6 +78,7 @@ jQuery(document).ready(
         var side;
         var trader;
         var tradeCompany;
+        var method;
 
         /*前端所有的input元素,不管type属性是text、number or whatever,js能拿到的用户输入都是字符串类型,
          因此如果需要int、double等类型需要做相应的类型转换，最好用的是Number(string str)方法*/
@@ -105,6 +106,12 @@ jQuery(document).ready(
             side=Number("1");
         }
 
+        if($("#inputTWAPForLimit").is(':checked')){
+            method="TWAP";
+        }
+        else{
+            method="";
+        }
 
         /*判定quantity、price的输入是否为空,是否为一个number
          * 注意NaN不能使用==来判定，要用专门的方法isNaN()*/
@@ -138,7 +145,8 @@ jQuery(document).ready(
                 "price":price,
                 "side":side,
                 "trader":trader,
-                "tradeCompany":tradeCompany
+                "tradeCompany":tradeCompany,
+                "method":method
             }),
             /*因为此次ajax提交后，后端除了响应状态码之外不会返回任何数据，所以dataType属性这里就不设置了，
              如果设置了dataType却没接收到返回数据，即使响应状态码是ok200，也会走error*/
@@ -165,6 +173,7 @@ jQuery(document).ready(
         var side;
         var trader;
         var tradeCompany;
+        var method;
 
         /*前端所有的input元素,不管type属性是text、number or whatever,js能拿到的用户输入都是字符串类型,
          因此如果需要int、double等类型需要做相应的类型转换，最好用的是Number(string str)方法*/
@@ -189,6 +198,12 @@ jQuery(document).ready(
             side=Number("1");
         }
 
+        if($("#inputTWAPForMarket").is(':checked')){
+            method="TWAP";
+        }
+        else{
+            method="";
+        }
 
         /*判定quantity、price的输入是否为空,是否为一个number
          * 注意NaN不能使用==来判定，要用专门的方法isNaN()*/
@@ -213,7 +228,8 @@ jQuery(document).ready(
                 "quantity":quantity,
                 "side":side,
                 "trader":trader,
-                "tradeCompany":tradeCompany
+                "tradeCompany":tradeCompany,
+                "method":method
             }),
             /*因为此次ajax提交后，后端除了响应状态码之外不会返回任何数据，所以dataType属性这里就不设置了，
              如果设置了dataType却没接收到返回数据，即使响应状态码是ok200，也会走error*/
@@ -241,6 +257,7 @@ jQuery(document).ready(
         var side;
         var trader;
         var tradeCompany;
+        var method;
 
         /*前端所有的input元素,不管type属性是text、number or whatever,js能拿到的用户输入都是字符串类型,
          因此如果需要int、double等类型需要做相应的类型转换，最好用的是Number(string str)方法*/
@@ -266,6 +283,13 @@ jQuery(document).ready(
         }
         else if(sideText=="Buy-side"){
             side=Number("1");
+        }
+
+        if($("#inputTWAPForStop").is(':checked')){
+            method="TWAP";
+        }
+        else{
+            method="";
         }
 
 
@@ -301,7 +325,8 @@ jQuery(document).ready(
                 "price":price,
                 "side":side,
                 "trader":trader,
-                "tradeCompany":tradeCompany
+                "tradeCompany":tradeCompany,
+                "method":method
             }),
             /*因为此次ajax提交后，后端除了响应状态码之外不会返回任何数据，所以dataType属性这里就不设置了，
              如果设置了dataType却没接收到返回数据，即使响应状态码是ok200，也会走error*/
@@ -321,32 +346,72 @@ jQuery(document).ready(
     /*click事件4：点击获取gold market depth按钮*/
     $("#goldDepth").click(function(e) {
         var period=$("#goldPeriod").find("option:selected").text();
+        var broker=$("#goldBroker").find("option:selected").text();
+        if(period=="period"){
+            alert("Please choose one period!");
+            return false;
+        }
+        else if(broker=="broker"){
+            alert("Please choose one broker!");
+            return false;
+        }
         addCookie("depth_product","gold",0);
         addCookie("depth_period",period,0);
+        addCookie("depth_broker",broker,0);
         window.location.href="depth.html";
     }),
 
     /*click事件5：点击获取silver market depth按钮*/
     $("#silverDepth").click(function(e) {
         var period=$("#silverPeriod").find("option:selected").text();
+        var broker=$("#silverBroker").find("option:selected").text();
+        if(period=="period"){
+            alert("Please choose one period!");
+            return false;
+        }
+        else if(broker=="broker"){
+            alert("Please choose one broker!");
+            return false;
+        }
         addCookie("depth_product","silver",0);
         addCookie("depth_period",period,0);
+        addCookie("depth_broker",broker,0);
         window.location.href="depth.html";
     }),
 
     /*click事件6：点击获取oil market depth按钮*/
     $("#oilDepth").click(function(e) {
         var period=$("#oilPeriod").find("option:selected").text();
+        var broker=$("#oilBroker").find("option:selected").text();
+        if(period=="period"){
+            alert("Please choose one period!");
+            return false;
+        }
+        else if(broker=="broker"){
+            alert("Please choose one broker!");
+            return false;
+        }
         addCookie("depth_product","oil",0);
         addCookie("depth_period",period,0);
+        addCookie("depth_broker",broker,0);
         window.location.href="depth.html";
     }),
 
     /*click事件7：点击获取soybean market depth按钮*/
     $("#soybeanDepth").click(function(e) {
         var period=$("#soybeanPeriod").find("option:selected").text();
+        var broker=$("#soybeanBroker").find("option:selected").text();
+        if(period=="period"){
+            alert("Please choose one period!");
+            return false;
+        }
+        else if(broker=="broker"){
+            alert("Please choose one broker!");
+            return false;
+        }
         addCookie("depth_product","soybean",0);
         addCookie("depth_period",period,0);
+        addCookie("depth_broker",broker,0);
         window.location.href="depth.html";
     })
 
