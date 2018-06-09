@@ -80,7 +80,7 @@ var drawTable=function(e) {
             url: "/blotter/all",
             async: false,
             data: JSON.stringify({
-                "broker":"M"
+                "broker":getCookie("username")
             }),
             contentType: "application/json",
 
@@ -102,7 +102,7 @@ var drawTable=function(e) {
             async: false,
             data: JSON.stringify({
                 "company":company,
-                "broker":"M"
+                "broker":getCookie("username")
             }),
             contentType: "application/json",
 
@@ -124,7 +124,7 @@ var drawTable=function(e) {
             async: false,
             data: JSON.stringify({
                 "company":company,
-                "broker":"M"
+                "broker":getCookie("username")
             }),
             contentType: "application/json",
 
@@ -146,7 +146,7 @@ var drawTable=function(e) {
             async: false,
             data: JSON.stringify({
                 "company":company,
-                "broker":"M"
+                "broker":getCookie("username")
             }),
             contentType: "application/json",
 

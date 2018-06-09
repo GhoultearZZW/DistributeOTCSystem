@@ -39,7 +39,7 @@ var signin=function(e){
 
     $.ajax({
         type:"post",
-        url:"/user/login",
+        url:"/broker",
         contentType: "application/json",
         data:JSON.stringify({
             "username":username,
@@ -50,7 +50,6 @@ var signin=function(e){
         /*后端的响应状态码为200时，表示响应成功，触发success*/
         success:function(response){
             var username="";
-            var company="";
             /*登陆成功后,服务器返回的response数据是登陆的这个trader对象(json格式)：
             * {
             *    "balance":0,
@@ -61,9 +60,7 @@ var signin=function(e){
             *  }*/
             /*把response的中的username、company值取出来存进cookie，作为浏览器关闭前的全局变量*/
             username+=response.username;//字符串形式
-            company+=response.company;
             addCookie("username",username,0);
-            addCookie("company",company,0);
 
             window.location.href = "home.html";
         },

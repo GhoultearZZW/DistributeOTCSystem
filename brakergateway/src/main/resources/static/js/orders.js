@@ -65,7 +65,7 @@ var drawTable=function(e) {
             data: JSON.stringify({
                 "product": product,
                 "period": period,
-                "broker": "M"
+                "broker": getCookie("username")
             }),
             contentType: "application/json",
 
@@ -87,7 +87,7 @@ var drawTable=function(e) {
             data: JSON.stringify({
                 "product": product,
                 "period": period,
-                "broker": "M"
+                "broker": getCookie("username")
             }),
             contentType: "application/json",
 
@@ -109,7 +109,7 @@ var drawTable=function(e) {
             data: JSON.stringify({
                 "product": product,
                 "period": period,
-                "broker": "M"
+                "broker": getCookie("username")
             }),
             contentType: "application/json",
 
@@ -131,7 +131,7 @@ var drawTable=function(e) {
             data: JSON.stringify({
                 "product": product,
                 "period": period,
-                "broker": "M"
+                "broker": getCookie("username")
             }),
             contentType: "application/json",
 
@@ -153,7 +153,7 @@ var drawTable=function(e) {
             data: JSON.stringify({
                 "product": product,
                 "period": period,
-                "broker": "M"
+                "broker": getCookie("username")
             }),
             contentType: "application/json",
 
