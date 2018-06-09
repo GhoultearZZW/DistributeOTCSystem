@@ -125,7 +125,6 @@ var refresh=function() {
         data: depth,
         cache:false,//是否使用缓存，默认为true
         striped:true,//是否显示行间隔色
-        uniqueId:'price',
         pagination:true,//分页
         paginationLoop:false,//分页条不可循环，比如处于最后一页时无法点击下一页
         pageList:[pageSize],//只提供固定pageSize的分页
@@ -184,38 +183,41 @@ function onMessage(evt){
         }
     }
     for(var i in depthChange){
-        if(depthChange[i].status==undefined){
-            for(var j=0;j<depth.length;j++){
-                if(depthChange[i].price==depth[j].price){
-                    if(depthChange[i].side==0) {
-                        depth[j]["Sell Vol"]=depthChange[i].quantity;
-                        alert(depthChange[i].quantity);
-                        $('#table').bootstrapTable('updateCell', {index:j, field: 'Sell Vol',value: depthChange[i].quantity});
-                    }
-                    else if(depthChange[i].side==1){
-                        depth[j]["Buy Vol"]=depthChange[i].quantity;
-                        $('#table').bootstrapTable('updateCell', {index:j, field: 'Buy Vol',value: depthChange[i].quantity});
-                    }
-                    else if(depthChange[i].side==undefined){
-                        depth.splice(j,1);
-                        $('#table').bootstrapTable('removeByUniqueId',depthChange[i].price);
-                        if(depth[j]["Buy Vol"]==""){
-                            for(var k=j-1;k>=0;k--){
-                                depth[k]["Sell Level"]--;
-                                $('#table').bootstrapTable('updateCell', {index:k, field: 'Sell Level',value: depth[k]["Sell Level"]});
-                            }
-                        }
-                        else if(depth[j]["Sell Vol"]==""){
-                            for(var k=j;k<depth.length;k++){
-                                depth[k]["Buy Level"]--;
-                                $('#table').bootstrapTable('updateCell', {index:k, field: 'Buy Level',value: depth[k]["Buy Level"]});
-                            }
+        for(var j=0;j<depth.length;j++){
+            if(depthChange[i].price==depth[j].price){
+                if(depthChange[i].side==0) {
+                    depth[j]["Sell Vol"]=depthChange[i].quantity;
+                    alert(depthChange[i].quantity);
+                    $('#table').bootstrapTable('updateCell', {index:j, field: 'Sell Vol',value: depthChange[i].quantity});
+                }
+                else if(depthChange[i].side==1){
+                    depth[j]["Buy Vol"]=depthChange[i].quantity;
+                    $('#table').bootstrapTable('updateCell', {index:j, field: 'Buy Vol',value: depthChange[i].quantity});
+                }
+                else if(depthChange[i].side==undefined){
+                    var buyVol=depth[j]["Buy Vol"];
+                    /*发现一件特别恐怖的事情，当删除table的某行时，会自动删除数据集depth的对应项！
+                    **也就是会自动执行depth.splice(j,1)，debug大坑！因此我在删除行之前先用buyVol保存下删除前的depth[j]*/
+                    $('#table').bootstrapTable('remove',{field:'price',values:[depthChange[i].price]});
+                    if(buyVol==""){
+                        for(var k=j-1;k>=0;k--){
+                            depth[k]["Sell Level"]--;
+                            $('#table').bootstrapTable('updateCell', {index:k, field: 'Sell Level',value: depth[k]["Sell Level"]});
                         }
                     }
+                    else{
+                        for(var k=j;k<depth.length;k++){
+                            depth[k]["Buy Level"]--;
+                            $('#table').bootstrapTable('updateCell', {index:k, field: 'Buy Level',value: depth[k]["Buy Level"]});
+                        }
+                    }
+                    //depth.splice(j,1);不需要再次执行了
                 }
             }
-
         }
+        var newPrice=depthChange[i].price;
+
+
 
     }
 }
