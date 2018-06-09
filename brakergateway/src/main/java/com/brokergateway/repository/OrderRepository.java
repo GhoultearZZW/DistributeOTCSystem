@@ -39,6 +39,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     List<Map<String, Object>> getAllProducts();
 
     @Query(value = "select new map(p.side,p.price,sum(p.quantity)) from Order p where p.product=:product and p.period=:period and p.broker=:broker and p.status = 1 group by " +
-            "p.price,p.side,p.quantity order by p.price desc")
+            "p.price,p.side order by p.price desc")
     List<Map<String, Object>> getOrderedDepth(@Param("product") String product, @Param("period") String period, @Param("broker") String broker);
 }
