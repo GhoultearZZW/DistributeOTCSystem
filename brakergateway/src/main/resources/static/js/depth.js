@@ -72,6 +72,14 @@ var initTable=function() {
                 depth[k]["Sell Level"] = "";
             }
         }
+        /*当depth里只有卖的订单时*/
+        else if(i==depth.length-1){
+            for(var j=i;j>=0;j--){
+                depth[j]["Buy Vol"]="";
+                depth[j]["Buy Level"]="";
+                depth[j]["Sell Level"]=i-j+1;
+            }
+        }
     }
 
     /*因为是每隔一秒钟刷新一次页面，每次初始化table之前必须先destroy*/
@@ -150,104 +158,223 @@ function onOpen(){
 function onError(){
     alert("Error happened in webSocket connection!");
 }
+/*js是单线程、事件触发的，就是说一次触发onMessage还没执行完就来了下一个触发，不会并行执行，而是等这个执行完了再执行下一个*/
 function onMessage(evt){
+    /*任何产品depth的变动，服务器都会推信息过来，是一个jsonArray*/
     var jsonArray=JSON.parse(evt.data);
     var depthChange=[];
+    /*我们需要过滤出当前depth页面需求的depth变动，即满足本页面请求的product、period、broker，保存在数组depthChange中*/
     for(var i in jsonArray){
         if(jsonArray[i].product==depth_product&&jsonArray[i].period==depth_period&&jsonArray[i].broker==depth_broker){
             depthChange.push(jsonArray[i]);
         }
     }
+    /*迭代处理所有的depth变动*/
     for(var i in depthChange){
-        for(var j=0;j<depth.length;j++){
-            if(depthChange[i].price==depth[j].price){
-                if(depthChange[i].side==0) {
-                    depth[j]["Sell Vol"]=depthChange[i].quantity;
-                    $('#table').bootstrapTable('updateCell', {index:j, field: 'Sell Vol',value: depthChange[i].quantity});
-                }
-                else if(depthChange[i].side==1){
-                    depth[j]["Buy Vol"]=depthChange[i].quantity;
-                    $('#table').bootstrapTable('updateCell', {index:j, field: 'Buy Vol',value: depthChange[i].quantity});
-                }
-                else if(depthChange[i].side==undefined){
-                    var buyVol=depth[j]["Buy Vol"];
-                    /*发现一件特别恐怖的事情，当删除table的某行时，会自动删除数据集depth的对应项！
-                     **也就是会自动执行depth.splice(j,1)，debug大坑！因此我在删除行之前先用buyVol保存下删除前的depth[j]*/
-                    $('#table').bootstrapTable('remove',{field:'price',values:[depthChange[i].price]});
-                    if(buyVol==""){
-                        for(var k=j-1;k>=0;k--){
-                            depth[k]["Sell Level"]--;
-                            $('#table').bootstrapTable('updateCell', {index:k, field: 'Sell Level',value: depth[k]["Sell Level"]});
+        /*如果当前depth深度为0，过来的变动肯定是增加的，直接插进去*/
+        if(depth.length==0){
+            if(depthChange[i].side==0){
+                $('#table').bootstrapTable('insertRow', {
+                    index: 0,
+                    row: {
+                        'Buy Vol': "",
+                        'Buy Level': "",
+                        'price': depthChange[i].price,
+                        'Sell Vol': depthChange[i].quantity,
+                        'Sell Level': 1
+                    }
+                });
+            }
+            else if(depthChange[i].side==1){
+                $('#table').bootstrapTable('insertRow', {
+                    index: 0,
+                    row: {
+                        'Sell Vol': "",
+                        'Sell Level': "",
+                        'price': depthChange[i].price,
+                        'Buy Vol': depthChange[i].quantity,
+                        'Buy Level': 1
+                    }
+                });
+            }
+        }
+        /*如果当前depth深度不为零*/
+        else {
+            for (var j = 0; j < depth.length; j++) {
+                /*如果表中有相同的价格，说明这次变动有两种可能情况：改变一条depth的Sell Vol/Buy Vol或者直接整条删除*/
+                if (depthChange[i].price == depth[j].price) {
+                    /*仅改变一条depth的Sell Vol*/
+                    if (depthChange[i].side == 0) {
+                        depth[j]["Sell Vol"] = depthChange[i].quantity;
+                        $('#table').bootstrapTable('updateCell', {
+                            index: j,
+                            field: 'Sell Vol',
+                            value: depthChange[i].quantity
+                        });
+                    }
+                    /*仅改变一条depth的Buy Vol*/
+                    else if (depthChange[i].side == 1) {
+                        depth[j]["Buy Vol"] = depthChange[i].quantity;
+                        $('#table').bootstrapTable('updateCell', {
+                            index: j,
+                            field: 'Buy Vol',
+                            value: depthChange[i].quantity
+                        });
+                    }
+                    /*说明是整条删除，同时要更新影响项的level，
+                      删除变动的json格式：{"product":"gold","period":"SEP18","broker":"M","price":40,"status":0}
+                      插入或者改变Vol的变动的json格式：{"product":"gold","period":"SEP18","broker":"M","side":0,"price":60,"quantity":1500}*/
+                    else if (depthChange[i].side == undefined) {
+                        var buyVol = depth[j]["Buy Vol"];
+                        /*发现一件特别恐怖的事情，当删除table的某行时，会自动删除数据集depth的对应项！
+                         **也就是会自动执行depth.splice(j,1)，debug大坑！因此我在删除行之前先用buyVol保存下删除前的depth[j]*/
+                        $('#table').bootstrapTable('remove', {field: 'price', values: [depthChange[i].price]});
+                        if (buyVol == "") {
+                            for (var k = j - 1; k >= 0; k--) {
+                                depth[k]["Sell Level"]--;
+                                $('#table').bootstrapTable('updateCell', {
+                                    index: k,
+                                    field: 'Sell Level',
+                                    value: depth[k]["Sell Level"]
+                                });
+                            }
+                        }
+                        else {
+                            for (var k = j; k < depth.length; k++) {
+                                depth[k]["Buy Level"]--;
+                                $('#table').bootstrapTable('updateCell', {
+                                    index: k,
+                                    field: 'Buy Level',
+                                    value: depth[k]["Buy Level"]
+                                });
+                            }
+                        }
+                        //depth.splice(j,1);不需要再次执行了
+                        /*维护marketPricePage*/
+                        for (var p = 0; p < depth.length; p++) {
+                            if (depth[p]["Buy Level"] == 1) {
+                                marketPricePage = Math.ceil(p / pageSize);
+                                break;
+                            }
                         }
                     }
-                    else{
-                        for(var k=j;k<depth.length;k++){
-                            depth[k]["Buy Level"]--;
-                            $('#table').bootstrapTable('updateCell', {index:k, field: 'Buy Level',value: depth[k]["Buy Level"]});
+                    break;
+                }
+                /*没有找到相等的price却大于了一个price，说明是新增一条depth*/
+                else if (depthChange[i].price > depth[j].price) {
+                    if (depthChange[i].side == 0) {
+                        var sellLevel;
+                        if (depth[j]["Sell Level"] == "") {
+                            sellLevel = 1;
+                        }
+                        else {
+                            sellLevel = depth[j]["Sell Level"] + 1;
+                        }
+                        $('#table').bootstrapTable('insertRow', {
+                            index: j,
+                            row: {
+                                'Buy Vol': "",
+                                'Buy Level': "",
+                                'price': depthChange[i].price,
+                                'Sell Vol': depthChange[i].quantity,
+                                'Sell Level': sellLevel
+                            }
+                        });
+                        for (var k = j - 1; k >= 0; --k) {
+                            depth[k]["Sell Level"]++;
+                            $('#table').bootstrapTable('updateCell', {
+                                index: k,
+                                field: 'Sell Level',
+                                value: depth[k]["Sell Level"]
+                            });
                         }
                     }
-                    //depth.splice(j,1);不需要再次执行了
-                    for(var p=0;p<depth.length;p++){
-                        if(depth[p]["Buy Level"]==1){
-                            marketPricePage=Math.ceil(p/pageSize);
+                    else if (depthChange[i].side == 1) {
+                        var buyLevel = depth[j]["Buy Level"];
+                        $('#table').bootstrapTable('insertRow', {
+                            index: j,
+                            row: {
+                                'Sell Vol': "",
+                                'Sell Level': "",
+                                'price': depthChange[i].price,
+                                'Buy Vol': depthChange[i].quantity,
+                                'Buy Level': buyLevel
+                            }
+                        });
+                        for (var k = j + 1; k < depth.length; k++) {
+                            depth[k]["Buy Level"]++;
+                            $('#table').bootstrapTable('updateCell', {
+                                index: k,
+                                field: 'Buy Level',
+                                value: depth[k]["Buy Level"]
+                            });
+                        }
+                    }
+                    for (var p = 0; p < depth.length; p++) {
+                        if (depth[p]["Buy Level"] == 1) {
+                            marketPricePage = Math.ceil(p / pageSize);
                             break;
                         }
                     }
+                    break;
                 }
-                break;
-            }
-            else if(depthChange[i].price>depth[j].price){
-                if(depthChange[i].side==0){
-                    var sellLevel;
-                    if(depth[j]["Sell Level"]==""){
-                        sellLevel=1;
+                /*直到遍历到最后一条depth也没有相同的price，说明是增加一条新的depth，而且price还是最小的，要考虑sell buy两种情况*/
+                else if (j == depth.length - 1) {
+                    if(depthChange[i].side==0){
+                        $('#table').bootstrapTable('insertRow', {
+                            index: j + 1,
+                            row: {
+                                'Buy Vol': "",
+                                'Buy Level': "",
+                                'price': depthChange[i].price,
+                                'Sell Vol': depthChange[i].quantity,
+                                'Sell Level': 1
+                            }
+                        });
+                        for(var k=j;k>=0;k--){
+                            depth[k]["Sell Level"]++;
+                            $('#table').bootstrapTable('updateCell', {
+                                index: k,
+                                field: 'Sell Level',
+                                value: depth[k]["Sell Level"]
+                            });
+                        }
                     }
-                    else{
-                        sellLevel=depth[j]["Sell Level"]+1;
+                    else if(depthChange[i].side==1) {
+                        var buyLevel = depth[j]["Buy Level"] + 1;
+                        $('#table').bootstrapTable('insertRow', {
+                            index: j + 1,
+                            row: {
+                                'Sell Vol': "",
+                                'Sell Level': "",
+                                'price': depthChange[i].price,
+                                'Buy Vol': depthChange[i].quantity,
+                                'Buy Level': buyLevel
+                            }
+                        });
                     }
-                    $('#table').bootstrapTable('insertRow',{index:j,row:{'Buy Vol':"",'Buy Level':"",'price':depthChange[i].price,'Sell Vol':depthChange[i].quantity,'Sell Level':sellLevel}});
-                    for(var k=j-1;k>=0;--k){
-                        depth[k]["Sell Level"]++;
-                        $('#table').bootstrapTable('updateCell',{index:k,field:'Sell Level',value:depth[k]["Sell Level"]});
+                    for (var p = 0; p < depth.length; p++) {
+                        if (depth[p]["Buy Level"] == 1) {
+                            marketPricePage = Math.ceil(p / pageSize);
+                            break;
+                        }
                     }
+                    break;
                 }
-                else if(depthChange[i].side==1){
-                    var buyLevel=depth[j]["Buy Level"];
-                    $('#table').bootstrapTable('insertRow',{index:j,row:{'Sell Vol':"",'Sell Level':"",'price':depthChange[i].price,'Buy Vol':depthChange[i].quantity,'Buy Level':buyLevel}});
-                    for(var k=j+1;k<depth.length;k++){
-                        depth[k]["Buy Level"]++;
-                        $('#table').bootstrapTable('updateCell',{index:k,field:'Buy Level',value:depth[k]["Buy Level"]});
-                    }
-                }
-                for(var p=0;p<depth.length;p++){
-                    if(depth[p]["Buy Level"]==1){
-                        marketPricePage=Math.ceil(p/pageSize);
-                        break;
-                    }
-                }
-                break;
-            }
-            else if(j==depth.length-1){
-                var buyLevel=depth[j]["Buy Level"]+1;
-                $('#table').bootstrapTable('insertRow',{index:j+1,row:{'Sell Vol':"",'Sell Level':"",'price':depthChange[i].price,'Buy Vol':depthChange[i].quantity,'Buy Level':buyLevel}});
-                for(var p=0;p<depth.length;p++){
-                    if(depth[p]["Buy Level"]==1){
-                        marketPricePage=Math.ceil(p/pageSize);
-                        break;
-                    }
-                }
-                break;
             }
         }
     }
 }
 
 var webSocket;
-var depth;
+var depth;//这是我维护的一个全局变量，任何一次onmMessage出过来，我在改动表的同时，对depth进行改动和维护，保持和表的同步变动
 var depth_product=getCookie("depth_product");
 var depth_period=getCookie("depth_period");
 var depth_broker=getCookie("depth_broker");
 var marketPricePage=1;//market price所在的页码，每次绘表都会更新它，便于用户直接跳转到这一页
 var pageSize=9;//每页的行数
+
+
+/*//先用ajax请求调用api，初始化当前的depth表，之后每当有depth变动，服务器都会推送信息到前台，前台调用onMessage函数对depth表进行修改*/
 initTable();
-window.addEventListener("load", connect, false);
+window.addEventListener("load", connect, false);//每次页面加载的时候都连接webSocket
