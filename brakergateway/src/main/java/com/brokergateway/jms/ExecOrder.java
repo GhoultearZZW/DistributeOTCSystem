@@ -45,6 +45,10 @@ public class ExecOrder {
     }
 
     public void execCancelOrder(JSONObject obj) {
+
+        orderService = execOrder.orderService;
+        traderOrderService = execOrder.traderOrderService;
+
         int orderId = convertToModel.converToCancelOrder(obj);
         System.out.println("----------------------------------------");
         System.out.println(orderId);

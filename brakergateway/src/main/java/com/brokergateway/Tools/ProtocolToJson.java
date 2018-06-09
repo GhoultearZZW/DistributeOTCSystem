@@ -20,6 +20,12 @@ public class ProtocolToJson {
                 pre = i + 1;
             }
         }
+        if(list.size()==2){
+            JSONObject obj = new JSONObject();
+            obj.put("orderId",list.get(1));
+            obj.put("orderType","CancelOrder");
+            return obj;
+        }
         JSONObject obj = new JSONObject();
         obj.put("broker", list.get(0));
         obj.put("orderType", list.get(1));
