@@ -358,7 +358,7 @@ jQuery(document).ready(
         addCookie("depth_product","gold",0);
         addCookie("depth_period",period,0);
         addCookie("depth_broker",broker,0);
-        window.location.href="depth.html";
+        window.location.href="depth_ws.html";
     }),
 
     /*click事件5：点击获取silver market depth按钮*/
@@ -376,7 +376,7 @@ jQuery(document).ready(
         addCookie("depth_product","silver",0);
         addCookie("depth_period",period,0);
         addCookie("depth_broker",broker,0);
-        window.location.href="depth.html";
+        window.location.href="depth_ws.html";
     }),
 
     /*click事件6：点击获取oil market depth按钮*/
@@ -394,7 +394,7 @@ jQuery(document).ready(
         addCookie("depth_product","oil",0);
         addCookie("depth_period",period,0);
         addCookie("depth_broker",broker,0);
-        window.location.href="depth.html";
+        window.location.href="depth_ws.html";
     }),
 
     /*click事件7：点击获取soybean market depth按钮*/
@@ -412,6 +412,6 @@ jQuery(document).ready(
         addCookie("depth_product","soybean",0);
         addCookie("depth_period",period,0);
         addCookie("depth_broker",broker,0);
-        window.location.href="depth.html";
+        window.location.href="depth_ws.html";
     })
 )
