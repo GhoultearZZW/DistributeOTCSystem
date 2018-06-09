@@ -1,8 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>Index</title>
+
+    <!--spring boot对请求静态资源的默认扫描路径是
+                                    classpath:/static
+                                    classpath:/public
+                                    classpath:/resources
+                                    classpath:/META-INF/resources
+        因此resources/resources&resources/static都是默认的扫描路径
+        但是其下的子文件夹并不是，因此请求时不能只请求文件名，而要带上子文件夹路径-->
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/index.css" rel="stylesheet">
 </head>
@@ -10,6 +18,7 @@
       style="background-repeat:no-repeat;
       background-size:100% 100%;
       background-attachment: fixed;">
+
 <div class="site-wrapper">
 
     <div class="site-wrapper-inner">
@@ -18,25 +27,12 @@
 
             <div class="inner cover">
                 <h1 class="cover-heading">Distributed Commodities OTC Electronic Trading System</h1>
-
-                <form class="form-signin" action="" method="post">
-
-                    <br>
-                    <label for="inputUsername" class="sr-only">Username</label>
-                    <div class="input-group">
-                        <span class="input-group-addon" style="background-color:rgba(255,255,255,0.4);"><span class="glyphicon glyphicon-user"></span></span>
-                        <input type="text" id="inputUsername" name="username" class="form-control" style="background:rgba(0, 0, 0, 0);" placeholder="Username">
-                    </div>
-
-                    <label for="inputPassword" class="sr-only">Password</label>
-                    <div class="input-group">
-                        <span class="input-group-addon" style="background-color:rgba(255,255,255,0.4);"><span class="glyphicon glyphicon-lock"></span></span>
-                        <input type="password" id="inputPassword" name="password" class="form-control" style="background:rgba(0, 0, 0, 0);" placeholder="Password">
-                    </div>
-
-                    <button class="btn btn-lg btn-primary btn-block" type="button" id="signin">Sign in</button>
-                </form>
-
+                <p class="lead">Cover is a one-page template for building simple and beautiful home resources. Download,
+                    edit the text, and add your own fullscreen background photo to make it your own.</p>
+                <p class="lead">
+                    <a href="signin.html" class="btn btn-lg btn-primary">Sign In</a>
+                    <a href="signup.html" class="btn btn-lg btn-success">Sign Up</a>
+                </p>
             </div>
 
         </div>
@@ -44,8 +40,8 @@
     </div>
 
 </div>
+<!-- Placed at the end of the document so templatesages load faster -->
+<script src="/js/bootstrap.min.js"></script>
 
-<script type="text/javascript" src="/jquery/jquery.min.js"></script>
-<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>

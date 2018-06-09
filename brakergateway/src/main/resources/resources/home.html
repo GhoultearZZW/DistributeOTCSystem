@@ -30,17 +30,17 @@
         <div class="panel-body">
             <form class="form-inline" role="form">
                 <div class="form-group">
-                    <select class="form-control" id="product">
-                        <option>gold</option>
-                        <option>silver</option>
-                        <option>oil</option>
-                        <option>soybean</option>
-                    </select>
-                    <select class="form-control" id="period">
+                    <select class="form-control"  id="goldPeriod">
+                        <option value='' disabled selected style='display:none;'>period</option>
                         <option>SEP16</option>
                         <option>SEP17</option>
                     </select>
-                    <button class="btn btn-default" id="blotter">Market Depth &raquo;</button>
+                    <select class="form-control"  id="goldBroker">
+                        <option value='' disabled selected style='display:none;'>broker</option>
+                        <option>M</option>
+                        <option>N</option>
+                    </select>
+                    <a class="btn btn-primary" id="goldDepth">Market Depth &raquo;</a>
                 </div>
             </form>
         </div>
@@ -55,28 +55,78 @@
         <div class="panel-body">
             <form class="form-inline" role="form">
                 <div class="form-group">
-                    <select class="form-control" id="produc">
-                        <option>gold</option>
-                        <option>silver</option>
-                        <option>oil</option>
-                        <option>soybean</option>
-                    </select>
-                    <select class="form-control" id="perio">
+                    <select class="form-control"  id="silverPeriod">
+                        <option value='' disabled selected style='display:none;'>period</option>
                         <option>SEP16</option>
                         <option>SEP17</option>
                     </select>
-                    <button class="btn btn-default" id="blotte">Market Depth &raquo;</button>
+                    <select class="form-control"  id="silverBroker">
+                        <option value='' disabled selected style='display:none;'>broker</option>
+                        <option>M</option>
+                        <option>N</option>
+                    </select>
+                    <a class="btn btn-primary" id="silverDepth">Market Depth &raquo;</a>
                 </div>
             </form>
         </div>
     </div>
 
+    <div class="panel panel-default" style="background-color: rgba(0, 0, 0, 0.4);">
+        <div class="panel-heading">
+            <h2 class="panel-title">
+                Oil
+            </h2>
+        </div>
+        <div class="panel-body">
+            <form class="form-inline" role="form">
+                <div class="form-group">
+                    <select class="form-control"  id="oilPeriod">
+                        <option value='' disabled selected style='display:none;'>period</option>
+                        <option>SEP16</option>
+                        <option>SEP17</option>
+                    </select>
+                    <select class="form-control"  id="oilBroker">
+                        <option value='' disabled selected style='display:none;'>broker</option>
+                        <option>M</option>
+                        <option>N</option>
+                    </select>
+                    <a class="btn btn-primary" id="oilDepth">Market Depth &raquo;</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="panel panel-default" style="background-color: rgba(0, 0, 0, 0.4);">
+        <div class="panel-heading">
+            <h2 class="panel-title">
+                Soybean
+            </h2>
+        </div>
+        <div class="panel-body">
+            <form class="form-inline" role="form">
+                <div class="form-group">
+                    <select class="form-control"  id="soybeanPeriod">
+                        <option value='' disabled selected style='display:none;'>period</option>
+                        <option>SEP16</option>
+                        <option>SEP17</option>
+                    </select>
+                    <select class="form-control"  id="soybeanBroker">
+                        <option value='' disabled selected style='display:none;'>broker</option>
+                        <option>M</option>
+                        <option>N</option>
+                    </select>
+                    <a class="btn btn-primary" id="soybeanDepth">Market Depth &raquo;</a>
+                </div>
+            </form>
+        </div>
+    </div>
     <footer class="footer">
-        <p>&copy; 2016 Company, Inc.</p>
+        <p>&copy; Distributed Commodities OTC Electronic Trading System</p>
     </footer>
 
 </div> <!-- /container -->
 <script type="text/javascript" src="/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/home.js"></script>
 </body>
 </html>

@@ -414,9 +414,4 @@ jQuery(document).ready(
         addCookie("depth_broker",broker,0);
         window.location.href="depth.html";
     })
-
-
-
-
-
 )

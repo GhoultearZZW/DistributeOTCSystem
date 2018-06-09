@@ -24,7 +24,7 @@ function getCookie(name){
     return "";
 }
 /*向后台发送ajax请求并用返回值绘制bootstrap表格*/
-var refresh=function() {
+var initTable=function() {
     //var depth;//全局变量,保存后台响应的depth数据集,其类型是JSON数组(JSONArray)
     $.ajax({
         type: "post",
@@ -36,12 +36,9 @@ var refresh=function() {
         async: false,//我们必须要等接收到后台返回的depth数据集之后才可以执行后面绘制表格的脚本,不然表格将为空
         contentType: "application/json",
         data: JSON.stringify({
-            //"period": depth_period,
-            //"product": depth_product,
-            //"broker": depth_broker
-            "period":"SEP16",
-            "product":"gold",
-            "broker":"M"
+            "period":depth_period,
+            "product":depth_product,
+            "broker":depth_broker
         }),
         dataType: "json",
         /*后端的响应状态码为200时，表示响应成功，触发success*/
@@ -130,38 +127,17 @@ var refresh=function() {
         pageList:[pageSize],//只提供固定pageSize的分页
         sidePagination: "client",//客户端分页，适合数据量较小的表格
         pageSize: pageSize,//一页的条目数
-        pageNumber:depthPageNumber,//初始时显示的页码
         clickToSelect:true,//是否启用点击选中行
-        onPageChange:function(number,size){//当更改页码或页面大小时触发
+        /*onPageChange:function(number,size){//当更改页码或页面大小时触发
             depthPageNumber=number;
-        }
-    })
-    $("#viewMarketPrice").click(function(e){
-        $('#table').bootstrapTable('selectPage', marketPricePage);
+        }*/
     })
 }
-/*全局变量,请求depth的product和period,保存在cookie中*/
-var depth_product=getCookie("depth_product");
-var depth_period=getCookie("depth_period");
-var depth_broker=getCookie("depth_broker");
-var depthPageNumber=1;//用户所处的当前页，保存在一个全局变量中，这样每次表格刷新后依然处于用户所在的页码，而不是跳到第一页，一定要有初始化的值1，不然第一次绘表显示时会出错
-var marketPricePage=1;//market price所在的页码，每次绘表都会更新它，便于用户直接跳转到这一页
-var pageSize=9;//每页的行数
 
-var depth;
-refresh();
+$("#viewMarketPrice").click(function(e){
+    $('#table').bootstrapTable('selectPage', marketPricePage);
+})
 
-
-
-
-
-
-
-
-
-
-
-var webSocket;
 function connect(){
     webSocket=new WebSocket("ws://localhost:8081/webSocket-depth");
     webSocket.onmessage=onMessage;
@@ -169,16 +145,16 @@ function connect(){
     webSocket.onerror=onError;
 }
 function onOpen(){
-    alert("Connected");
+    //alert("Connected");
 }
 function onError(){
-    alert("Error");
+    alert("Error happened in webSocket connection!");
 }
 function onMessage(evt){
     var jsonArray=JSON.parse(evt.data);
     var depthChange=[];
     for(var i in jsonArray){
-        if(jsonArray[i].product=="gold"&&jsonArray[i].period=="SEP16"&&jsonArray[i].broker=="M"){
+        if(jsonArray[i].product==depth_product&&jsonArray[i].period==depth_period&&jsonArray[i].broker==depth_broker){
             depthChange.push(jsonArray[i]);
         }
     }
@@ -187,7 +163,6 @@ function onMessage(evt){
             if(depthChange[i].price==depth[j].price){
                 if(depthChange[i].side==0) {
                     depth[j]["Sell Vol"]=depthChange[i].quantity;
-                    alert(depthChange[i].quantity);
                     $('#table').bootstrapTable('updateCell', {index:j, field: 'Sell Vol',value: depthChange[i].quantity});
                 }
                 else if(depthChange[i].side==1){
@@ -197,7 +172,7 @@ function onMessage(evt){
                 else if(depthChange[i].side==undefined){
                     var buyVol=depth[j]["Buy Vol"];
                     /*发现一件特别恐怖的事情，当删除table的某行时，会自动删除数据集depth的对应项！
-                    **也就是会自动执行depth.splice(j,1)，debug大坑！因此我在删除行之前先用buyVol保存下删除前的depth[j]*/
+                     **也就是会自动执行depth.splice(j,1)，debug大坑！因此我在删除行之前先用buyVol保存下删除前的depth[j]*/
                     $('#table').bootstrapTable('remove',{field:'price',values:[depthChange[i].price]});
                     if(buyVol==""){
                         for(var k=j-1;k>=0;k--){
@@ -212,13 +187,67 @@ function onMessage(evt){
                         }
                     }
                     //depth.splice(j,1);不需要再次执行了
+                    for(var p=0;p<depth.length;p++){
+                        if(depth[p]["Buy Level"]==1){
+                            marketPricePage=Math.ceil(p/pageSize);
+                            break;
+                        }
+                    }
                 }
+                break;
+            }
+            else if(depthChange[i].price>depth[j].price){
+                if(depthChange[i].side==0){
+                    var sellLevel;
+                    if(depth[j]["Sell Level"]==""){
+                        sellLevel=1;
+                    }
+                    else{
+                        sellLevel=depth[j]["Sell Level"]+1;
+                    }
+                    $('#table').bootstrapTable('insertRow',{index:j,row:{'Buy Vol':"",'Buy Level':"",'price':depthChange[i].price,'Sell Vol':depthChange[i].quantity,'Sell Level':sellLevel}});
+                    for(var k=j-1;k>=0;--k){
+                        depth[k]["Sell Level"]++;
+                        $('#table').bootstrapTable('updateCell',{index:k,field:'Sell Level',value:depth[k]["Sell Level"]});
+                    }
+                }
+                else if(depthChange[i].side==1){
+                    var buyLevel=depth[j]["Buy Level"];
+                    $('#table').bootstrapTable('insertRow',{index:j,row:{'Sell Vol':"",'Sell Level':"",'price':depthChange[i].price,'Buy Vol':depthChange[i].quantity,'Buy Level':buyLevel}});
+                    for(var k=j+1;k<depth.length;k++){
+                        depth[k]["Buy Level"]++;
+                        $('#table').bootstrapTable('updateCell',{index:k,field:'Buy Level',value:depth[k]["Buy Level"]});
+                    }
+                }
+                for(var p=0;p<depth.length;p++){
+                    if(depth[p]["Buy Level"]==1){
+                        marketPricePage=Math.ceil(p/pageSize);
+                        break;
+                    }
+                }
+                break;
+            }
+            else if(j==depth.length-1){
+                var buyLevel=depth[j]["Buy Level"]+1;
+                $('#table').bootstrapTable('insertRow',{index:j+1,row:{'Sell Vol':"",'Sell Level':"",'price':depthChange[i].price,'Buy Vol':depthChange[i].quantity,'Buy Level':buyLevel}});
+                for(var p=0;p<depth.length;p++){
+                    if(depth[p]["Buy Level"]==1){
+                        marketPricePage=Math.ceil(p/pageSize);
+                        break;
+                    }
+                }
+                break;
             }
         }
-        var newPrice=depthChange[i].price;
-
-
-
     }
 }
+
+var webSocket;
+var depth;
+var depth_product=getCookie("depth_product");
+var depth_period=getCookie("depth_period");
+var depth_broker=getCookie("depth_broker");
+var marketPricePage=1;//market price所在的页码，每次绘表都会更新它，便于用户直接跳转到这一页
+var pageSize=9;//每页的行数
+initTable();
 window.addEventListener("load", connect, false);
