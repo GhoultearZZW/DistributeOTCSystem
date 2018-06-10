@@ -16,4 +16,5 @@ public interface TraderRepository extends JpaRepository<Trader, Integer> {
 
     @Query(value = "select * from trader where username=:username", nativeQuery = true)
     Trader getTraderByUsername(@Param("username") String username);
+
 }
