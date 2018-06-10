@@ -80,6 +80,15 @@ var drawTable=function(e) {
         }
     })
 
+    /*没有自己公司参与的交易是不可以看见交易双方的信息的*/
+    for(var i in blotter){
+        if(blotter[i].initiatorCompany!=getCookie("company")&&blotter[i].completionTrader!=getCookie("company")){
+            blotter[i].initiatorTrader="-";
+            blotter[i].initiatorCompany="-";
+            blotter[i].completionTrader="-";
+            blotter[i].completionCompany="-";
+        }
+    }
 
     /*将json数组depth以表格的形式绘制出来*/
     $('#table').bootstrapTable({
