@@ -73,13 +73,13 @@ var initTable=function() {
             }
         }
         /*当depth里只有卖的订单时*/
-        else if(i==depth.length-1){
+        /*else if(i==depth.length-1){
             for(var j=i;j>=0;j--){
                 depth[j]["Buy Vol"]="";
                 depth[j]["Buy Level"]="";
                 depth[j]["Sell Level"]=i-j+1;
             }
-        }
+        }*/
     }
 
     /*因为是每隔一秒钟刷新一次页面，每次初始化table之前必须先destroy*/
