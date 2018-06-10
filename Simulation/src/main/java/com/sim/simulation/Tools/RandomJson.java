@@ -31,12 +31,15 @@ public class RandomJson {
 
         obj.put("broker","M");
         obj.put("orderType","LimitOrder");
+        /*
         obj.put("period",periodList.get(random.nextInt(periodList.size())));
-        obj.put("product",productList.get(random.nextInt(productList.size())));
+        obj.put("product",productList.get(random.nextInt(productList.size())));*/
+        obj.put("product","gold");
+        obj.put("period","SEP16");
         obj.put("quantity",random.nextInt(100));
         obj.put("trader","jolin");
         obj.put("side",random.nextInt(2));
-        obj.put("price",random.nextInt(100));
+        obj.put("price",random.nextInt(45)+10);
 
         return obj;
     }
