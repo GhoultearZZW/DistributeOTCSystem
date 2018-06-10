@@ -82,7 +82,7 @@ var drawTable=function(e) {
 
     /*没有自己公司参与的交易是不可以看见交易双方的信息的*/
     for(var i in blotter){
-        if(blotter[i].initiatorCompany!=getCookie("company")&&blotter[i].completionTrader!=getCookie("company")){
+        if(blotter[i].initiatorCompany!=getCookie("company")&&blotter[i].completionCompany!=getCookie("company")){
             blotter[i].initiatorTrader="-";
             blotter[i].initiatorCompany="-";
             blotter[i].completionTrader="-";

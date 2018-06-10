@@ -71,6 +71,7 @@ var initTable=function() {
                 depth[k]["Buy Level"] = k - i + 1;
                 depth[k]["Sell Level"] = "";
             }
+            break;
         }
         /*当depth里只有卖的订单时*/
         else if(i==depth.length-1){
