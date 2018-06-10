@@ -4,9 +4,7 @@ import com.tradergateway.Async.AsyncConfig;
 import com.tradergateway.Tools.*;
 import com.tradergateway.model.Blotter;
 import com.tradergateway.model.Order;
-import com.tradergateway.service.BlotterService;
-import com.tradergateway.service.OrderService;
-import com.tradergateway.service.ProducerService;
+import com.tradergateway.service.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.activemq.command.ActiveMQQueue;
@@ -39,7 +37,10 @@ public class OrderController {
     BlotterService blotterService;
     @Autowired
     ProducerService producerService;
-
+    @Autowired
+    CompanyService companyService;
+    @Autowired
+    TraderService traderService;
 
     private GetEndTime getEndTime = new GetEndTime();
     private ConvertToModel convertToModel = new ConvertToModel();
@@ -95,8 +96,21 @@ public class OrderController {
     }
 
     @RequestMapping(value = "depth/order", method = RequestMethod.POST)
-    public ResponseEntity<Void> sendOrder(@RequestBody JSONObject obj) {
+    public ResponseEntity<JSONObject> sendOrder(@RequestBody JSONObject obj) {
         Destination destination = null;
+
+        //get fee
+        Integer fee = companyService.getCredit(traderService.getCompanyByUsername((String)obj.get("trader")));
+        String orderType = (String)obj.get("orderType");
+        if(orderType.equals("LimitOrder"))
+            fee*=1;
+        else if(orderType.equals("MarketOrder"))
+            fee*=2;
+        else if(orderType.equals("StopOrder"))
+            fee*=2;
+        JSONObject result = new JSONObject();
+        result.put("price",fee);
+
         destination = new ActiveMQQueue("order.queue");
         if (obj.containsKey("method") && ((String) obj.get("method")).equals("TWAP")) {
             ExecutorService service = Executors.newFixedThreadPool(10);
@@ -112,7 +126,7 @@ public class OrderController {
             str = jsonToProtocol.convertToString(obj);
         }
         producerService.send(destination, str);
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return new ResponseEntity<>(result,HttpStatus.OK);
     }
 
     //class for TWAP
