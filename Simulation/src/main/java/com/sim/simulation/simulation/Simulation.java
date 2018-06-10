@@ -19,7 +19,7 @@ public class Simulation {
     private JsonToProtocol jsonToProtocol = new JsonToProtocol();
     private RandomJson randomJson = new RandomJson();
 
-    @Scheduled(fixedDelay = 2000)
+    @Scheduled(fixedDelay = 500)
     public void sendLimitOrder() throws Exception{
 
         Destination destination = new ActiveMQQueue("order.queue");
@@ -30,7 +30,7 @@ public class Simulation {
         jmsTemplate.convertAndSend(destination,str);
     }
 
-    @Scheduled(fixedDelay = 3000)
+    /*@Scheduled(fixedDelay = 3000)
     public void sendMarketOrder() throws Exception{
         Destination destination = new ActiveMQQueue("order.queue");
 
@@ -46,5 +46,5 @@ public class Simulation {
         JSONObject obj = randomJson.getStopOrder();
         String str = jsonToProtocol.convertToString(obj);
         jmsTemplate.convertAndSend(destination,str);
-    }
+    }*/
 }

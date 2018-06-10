@@ -27,7 +27,7 @@ public class SendInfo {
 
     private static Map<ArrayList<String>, List<Map<String, Object>>> depthList = new HashMap<>();
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelay = 1000)
     public void send() throws Exception {
 
         orderService = sendInfo.orderService;
@@ -68,7 +68,7 @@ public class SendInfo {
                 for (int j = 0; j < oldMap.size(); j++) {
                     if (map == null || !map.contains(oldMap.get(j))) {
                         if(changedPrice.contains((Double)oldMap.get(j).get("1"))){
-                            break;
+                            continue;
                         }
                         JSONObject obj = new JSONObject();
                         obj.put("product", product.get(1));
